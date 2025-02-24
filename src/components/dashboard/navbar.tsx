@@ -13,10 +13,8 @@ import {
 } from "@/components/ui/dropdown-menu"
 
 const navItems = [
-  { name: 'GetBeds', href: '/dashboard' },
-  { name: 'Diagnostic Centres', href: '/dashboard/diagnostic' },
+  { name: 'Dashboard', href: '/dashboard' },
   { name: 'Hospital Beds', href: '/dashboard/hospitals' },
-  { name: 'Ambulances', href: '/dashboard/ambulances' },
   { name: 'Bookings', href: '/dashboard/bookings' },
   { name: 'Analytics', href: '/dashboard/analytics' },
   {
