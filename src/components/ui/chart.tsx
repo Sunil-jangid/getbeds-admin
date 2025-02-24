@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import * as RechartsPrimitive from "recharts"
+import { Bar, BarChart as RechartsBarChart, Line, LineChart as RechartsLineChart } from "recharts"
 
 import { cn } from "@/lib/utils"
 
@@ -353,6 +354,70 @@ function getPayloadConfigFromPayload(
   return configLabelKey in config
     ? config[configLabelKey]
     : config[key as keyof typeof config]
+}
+
+interface ChartProps {
+  data: any[]
+  index: string
+  categories: string[]
+  colors?: string[]
+  className?: string
+  valueFormatter?: (value: number) => string
+}
+
+export function LineChart({
+  data,
+  index,
+  categories,
+  colors = ["hsl(var(--primary))"],
+  valueFormatter,
+  className,
+}: ChartProps) {
+  return (
+    <RechartsLineChart
+      data={data}
+      className={className}
+      margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
+    >
+      {categories.map((category, i) => (
+        <Line
+          key={category}
+          type="monotone"
+          dataKey={category}
+          stroke={colors[i % colors.length]}
+          strokeWidth={2}
+          dot={false}
+          activeDot={{ r: 6, style: { fill: colors[i % colors.length] } }}
+        />
+      ))}
+    </RechartsLineChart>
+  )
+}
+
+export function BarChart({
+  data,
+  index,
+  categories,
+  colors = ["hsl(var(--primary))"],
+  valueFormatter,
+  className,
+}: ChartProps) {
+  return (
+    <RechartsBarChart
+      data={data}
+      className={className}
+      margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
+    >
+      {categories.map((category, i) => (
+        <Bar
+          key={category}
+          dataKey={category}
+          fill={colors[i % colors.length]}
+          radius={[4, 4, 0, 0]}
+        />
+      ))}
+    </RechartsBarChart>
+  )
 }
 
 export {

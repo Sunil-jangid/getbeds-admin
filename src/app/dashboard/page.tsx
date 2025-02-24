@@ -8,6 +8,8 @@ import { InventoryUtilization } from '@/components/dashboard/inventory-utilizati
 import { PerformanceOverview } from '@/components/dashboard/performance-overview'
 import { Button } from '@/components/ui/button'
 import { Download } from 'lucide-react'
+import { TotalRevenue } from '@/components/dashboard/total-revenue'
+import { ServiceCard } from '@/components/dashboard/service-card'
 
 export default function DashboardPage() {
   return (
@@ -17,6 +19,40 @@ export default function DashboardPage() {
         location="New Delhi, India"
       />
       
+      {/* Total Revenue */}
+      <TotalRevenue />
+
+      {/* Services Row */}
+      <div className="grid grid-cols-2 gap-6">
+        <ServiceCard 
+          title="Hospital Service"
+          description="Lorem Ipsum"
+          metrics={[
+            {
+              label: "Revenue Booked",
+              value: "Total 7852",
+              note: "*P.2, R%, + total week $000 from 1st Dec 2014"
+            }
+          ]}
+          additionalInfo="Vendor ID: #1234567-YUISOP"
+        />
+        <ServiceCard 
+          title="Ambulance Service"
+          description="Lorem Ipsum"
+          metrics={[
+            {
+              label: "Active Ambulances",
+              value: "89",
+              note: "(*+16% rise month)"
+            },
+            {
+              label: "Status",
+              value: "On Route"
+            }
+          ]}
+        />
+      </div>
+
       {/* Revenue Summary Section */}
       <div className="grid grid-cols-3 gap-6">
         <RevenueSummaries />
