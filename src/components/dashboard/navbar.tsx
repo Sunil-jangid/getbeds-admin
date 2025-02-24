@@ -15,17 +15,17 @@ import {
 const navItems = [
   { name: 'GetBeds', href: '/dashboard' },
   { name: 'Diagnostic Centres', href: '/dashboard/diagnostic' },
-  { name: 'Hospital Beds', href: '/hospitals' },
-  { name: 'Ambulances', href: '/ambulances' },
-  { name: 'Bookings', href: '/bookings' },
-  { name: 'Analytics', href: '/analytics' },
+  { name: 'Hospital Beds', href: '/dashboard/hospitals' },
+  { name: 'Ambulances', href: '/dashboard/ambulances' },
+  { name: 'Bookings', href: '/dashboard/bookings' },
+  { name: 'Analytics', href: '/dashboard/analytics' },
   {
     name: 'Inventory',
-    href: '/inventory',
+    href: '/dashboard/inventory',
     dropdownItems: [
-      { name: 'Manage Hospitals', href: '/inventory/hospitals' },
-      { name: 'Manage Users', href: '/inventory/users' },
-      { name: 'Approvals', href: '/inventory/approvals' },
+      { name: 'Manage Hospitals', href: '/dashboard/inventory/hospitals' },
+      { name: 'Manage Users', href: '/dashboard/inventory/users' },
+      { name: 'Approvals', href: '/dashboard/inventory/approvals' },
     ]
   }
 ]
