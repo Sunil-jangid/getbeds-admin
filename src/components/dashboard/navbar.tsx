@@ -3,9 +3,14 @@
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
 import { usePathname } from 'next/navigation'
-import { Bell, Search, User } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { Bell, ChevronDown, Search, User } from 'lucide-react'
 import Image from 'next/image'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 const navItems = [
   { name: 'GetBeds', href: '/dashboard' },
@@ -13,7 +18,16 @@ const navItems = [
   { name: 'Hospital Beds', href: '/hospitals' },
   { name: 'Ambulances', href: '/ambulances' },
   { name: 'Bookings', href: '/bookings' },
-  { name: 'Analytics', href: '/analytics' }
+  { name: 'Analytics', href: '/analytics' },
+  {
+    name: 'Inventory',
+    href: '/inventory',
+    dropdownItems: [
+      { name: 'Manage Hospitals', href: '/inventory/hospitals' },
+      { name: 'Manage Users', href: '/inventory/users' },
+      { name: 'Approvals', href: '/inventory/approvals' },
+    ]
+  }
 ]
 
 export function DashboardNavbar() {
@@ -39,20 +53,45 @@ export function DashboardNavbar() {
 
           {/* Navigation Links */}
           <div className="flex items-center gap-1 bg-background/50 backdrop-blur-sm px-2 rounded-full">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={cn(
-                  'px-4 py-2 rounded-full text-sm font-medium transition-colors',
-                  pathname === item.href 
-                    ? 'bg-black text-white' 
-                    : 'text-black hover:bg-gray-100'
-                )}
-              >
-                {item.name}
-              </Link>
-            ))}
+            {navItems.map((item) => {
+              if (item.dropdownItems) {
+                return (
+                  <DropdownMenu key={item.href}>
+                    <DropdownMenuTrigger className="px-4 py-2 rounded-full text-sm font-medium transition-colors hover:bg-gray-100 flex items-center gap-1">
+                      {item.name}
+                      <ChevronDown className="h-4 w-4" />
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                      {item.dropdownItems.map((dropdownItem) => (
+                        <DropdownMenuItem key={dropdownItem.href}>
+                          <Link
+                            href={dropdownItem.href}
+                            className="w-full"
+                          >
+                            {dropdownItem.name}
+                          </Link>
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                )
+              }
+
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={cn(
+                    'px-4 py-2 rounded-full text-sm font-medium transition-colors',
+                    pathname === item.href 
+                      ? 'bg-black text-white' 
+                      : 'text-black hover:bg-gray-100'
+                  )}
+                >
+                  {item.name}
+                </Link>
+              )
+            })}
           </div>
 
           {/* Right Side Actions */}
