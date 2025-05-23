@@ -20,6 +20,8 @@ const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
         customViewMore: "bg-gray-200 text-black hover:bg-gray-300",
         customManage: "bg-black text-white hover:bg-gray-800",
+        Managehospitalsnavi: "text-xs text-gray-400 px-2 py-1 border rounded disabled:opacity-50",
+        Managehospitalsnavinumber: "text-xs px-3 py-1 rounded border text-gray-600 hover:bg-gray-100 data-[active=true]:bg-black data-[active=true]:text-white data-[active=true]:border-black",
       },
       size: {
         default: "h-9 px-4 py-2",
