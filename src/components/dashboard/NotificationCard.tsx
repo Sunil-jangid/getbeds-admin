@@ -1,4 +1,6 @@
 import React from 'react';
+import { Button } from '@/components/ui/button';
+import { CardNotification } from '@/components/ui/card';
 
 type NotificationCardProps = {
   title: string;
@@ -14,7 +16,7 @@ const NotificationCard: React.FC<NotificationCardProps> = ({
   showButtons = false,
 }) => {
   return (
-    <div className="bg-white p-6 rounded-xl shadow-md mb-6 flex items-start space-x-6 w-full min-h-[160px]">
+    <CardNotification>
       <div className="w-16 h-16 bg-gray-300 rounded-full flex-shrink-0"></div>
       <div className="flex-grow">
         <div className="flex justify-between items-start">
@@ -23,17 +25,18 @@ const NotificationCard: React.FC<NotificationCardProps> = ({
         </div>
         {message && <p className="text-sm text-gray-700 mt-2">{message}</p>}
         <div className="mt-4 flex gap-3">
-          <button className="text-sm bg-gray-200 text-black px-4 py-2 rounded-md hover:bg-gray-300 transition">
+          <Button variant="customViewMore" size="sm">
             View More
-          </button>
-          {showButtons && (
-            <button className="text-sm bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800 transition">
-              Manage
-            </button>
-          )}
+          </Button>
+
+        {showButtons && (
+            <Button variant="customManage" size="sm">
+            Manage
+            </Button>
+        )}
         </div>
       </div>
-    </div>
+    </CardNotification>
   );
 };
 

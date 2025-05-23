@@ -73,4 +73,16 @@ const CardFooter = React.forwardRef<
 ))
 CardFooter.displayName = "CardFooter"
 
-export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent }
+const CardNotification = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn("bg-white p-6 rounded-xl shadow-md mb-6 flex items-start space-x-6 w-full min-h-[160px]", className)}
+    {...props}
+  />
+))
+CardFooter.displayName = "CardNotification"
+
+export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent ,CardNotification}
