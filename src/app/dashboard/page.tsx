@@ -1,13 +1,21 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import SummaryCard from "@/components/dashboard/SummaryCard";
-import Image from "next/image";
-import {
-  PieChart, Pie, Cell,
-  BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer , Legend
-} from 'recharts';
+import OverviewStats from "@/components/dashboard/OverviewStats";
+import PerformanceOverview from "@/components/dashboard/PerformanceOverview";
+import ChartsSection from "@/components/dashboard/ChartsSection";
+import TotalRevenue from "@/components/dashboard/TotalRevenue";
+import AnalyticsCardList from "@/components/dashboard/AnalyticsCardList";
+import PatientInsightsChart from "@/components/dashboard/PatientInsightsChart";
+import HospitalServiceCards from "@/components/dashboard/HospitalServiceCards";
+import StatCardsGrid from "@/components/dashboard/StatCards";
+import "react-circular-progressbar/dist/styles.css";
+import "react-datepicker/dist/react-datepicker.css";
 
 const Dashboard = () => {
+  const [selectedYear, setSelectedYear] = useState("2025");
+  const timeframes = ["Daily", "Weekly", "Monthly", "Yearly"];
   const adminData = {
     name: "Johe",
     location: "Bangalore",
@@ -16,115 +24,261 @@ const Dashboard = () => {
   const hour = new Date().getHours();
   const greeting = hour < 12 ? "Good Morning!" : hour < 18 ? "Good Afternoon!" : "Good Evening!";
 
-  const generateDailyData = (min: number, max: number, count: number) =>
+  const generateRandomData = (min: number, max: number, count: number) =>
     Array.from({ length: count }, () => Math.floor(Math.random() * (max - min + 1)) + min);
 
-  const cardsData = [
-    {
-      id: "hospitals",
-      title: "HOSPITALS",
-      revenue: 0,
-      growth: 12890,
-      chartData: generateDailyData(1000, 2000, 360),
-    },
-    {
-      id: "ambulance",
-      title: "AMBULANCE",
-      revenue: 0,
-      growth: 7890,
-      chartData: generateDailyData(800, 1500, 360),
-    },
-    {
-      id: "diagnostic",
-      title: "DIAGNOSTIC CENTRES",
-      revenue: 0,
-      growth: -14580,
-      chartData: generateDailyData(500, 1200, 360),
-    },
-  ];
+  const isRealYear = selectedYear === "2025";
+  const isRandomYear = selectedYear === "2026" || selectedYear === "2027";
 
-  const data = [
-    {
-      icon: "/user.png",
-      title: "Total No. of Users",
-      count: "5,423",
-      change: 16,
-    },
-    {
-      icon: "/hospitals.png",
-      title: "Total No. of Hospitals",
-      count: "1,893",
-      change: -1,
-    },
-    {
-      icon: "/diagnostic.png",
-      title: "Total No. of Diagnostic Centres",
-      count: "189",
-      change: 16,
-    },
-  ];
+  const getCardsData = () => {
+    return [
+      {
+        id: "hospitals",
+        title: "HOSPITALS",
+        revenue: 0,
+        growth: isRealYear ? 12890 : isRandomYear ? Math.floor(Math.random() * 10000) : 0,
+        chartData: isRealYear
+          ? generateRandomData(1000, 2000, 360)
+          : isRandomYear
+            ? generateRandomData(500, 1500, 360)
+            : Array(360).fill(0),
+      },
+      {
+        id: "ambulance",
+        title: "AMBULANCE",
+        revenue: 0,
+        growth: isRealYear ? 7890 : isRandomYear ? Math.floor(Math.random() * 8000) : 0,
+        chartData: isRealYear
+          ? generateRandomData(800, 1500, 360)
+          : isRandomYear
+            ? generateRandomData(400, 1300, 360)
+            : Array(360).fill(0),
+      },
+      {
+        id: "diagnostic",
+        title: "DIAGNOSTIC CENTRES",
+        revenue: 0,
+        growth: isRealYear ? -14580 : isRandomYear ? -Math.floor(Math.random() * 10000) : 0,
+        chartData: isRealYear
+          ? generateRandomData(500, 1200, 360)
+          : isRandomYear
+            ? generateRandomData(200, 900, 360)
+            : Array(360).fill(0),
+      },
+    ];
+  };
+
+  const getOverviewStats = () => {
+    return [
+      {
+        icon: "/user.png",
+        title: "Total No. of Users",
+        count: isRealYear ? "5,423" : isRandomYear ? `${Math.floor(Math.random() * 5000) + 1000}` : "0",
+        change: isRealYear ? 16 : isRandomYear ? Math.floor(Math.random() * 20) : 0,
+      },
+      {
+        icon: "/hospitals.png",
+        title: "Total No. of Hospitals",
+        count: isRealYear ? "1,893" : isRandomYear ? `${Math.floor(Math.random() * 1500) + 200}` : "0",
+        change: isRealYear ? -1 : isRandomYear ? Math.floor(Math.random() * 20) - 10 : 0,
+      },
+      {
+        icon: "/diagnostic.png",
+        title: "Total No. of Diagnostic Centres",
+        count: isRealYear ? "189" : isRandomYear ? `${Math.floor(Math.random() * 300) + 50}` : "0",
+        change: isRealYear ? 16 : isRandomYear ? Math.floor(Math.random() * 30) : 0,
+      },
+    ];
+  };
+
+  const getPerformanceData = () => {
+    return [
+      {
+        label: "Beds Booked",
+        value: isRealYear ? "1000" : isRandomYear ? `${Math.floor(Math.random() * 1000)}` : "0",
+        change: isRealYear ? "+8%" : isRandomYear ? `${Math.floor(Math.random() * 20) - 10}%` : "0%",
+        icon: '/bedbooking.png',
+        bg: "bg-pink-100",
+        iconBg: "#ff6584"
+      },
+      {
+        label: "Total Orders",
+        value: isRealYear ? "300" : isRandomYear ? `${Math.floor(Math.random() * 500)}` : "0",
+        change: isRealYear ? "+5%" : isRandomYear ? `${Math.floor(Math.random() * 20) - 5}%` : "0%",
+        icon: '/totaloders.png',
+        bg: "bg-orange-100",
+        iconBg: "#ff9f68"
+      },
+      {
+        label: "Medicines Sold",
+        value: isRealYear ? "5" : isRandomYear ? `${Math.floor(Math.random() * 20)}` : "0",
+        change: isRealYear ? "-12%" : isRandomYear ? `${Math.floor(Math.random() * 20) - 10}%` : "0%",
+        icon: '/medicinessold.png',
+        bg: "bg-green-100",
+        iconBg: "#34d399"
+      },
+      {
+        label: "Home Service",
+        value: isRealYear ? "8" : isRandomYear ? `${Math.floor(Math.random() * 30)}` : "0",
+        change: isRealYear ? "0.5%" : isRandomYear ? `${(Math.random() * 5).toFixed(1)}%` : "0%",
+        icon: '/homeservies.png',
+        bg: "bg-purple-100",
+        iconBg: "#a78bfa"
+      }
+    ];
+  };
+
+  const getPieData = () => {
+    return [
+      { name: 'Delhi', value: isRealYear ? 34 : isRandomYear ? Math.floor(Math.random() * 50) : 0, color: '#fb5531' },
+      { name: 'Mumbai', value: isRealYear ? 28 : isRandomYear ? Math.floor(Math.random() * 50) : 0, color: '#20c997' },
+      { name: 'UP', value: isRealYear ? 16 : isRandomYear ? Math.floor(Math.random() * 50) : 0, color: '#845ef7' },
+      { name: 'Gujrat', value: isRealYear ? 23 : isRandomYear ? Math.floor(Math.random() * 50) : 0, color: '#3b82f6' },
+    ];
+  };
+
+  const getBarData = () => {
+    const generate = () => ({
+      actual: isRealYear ? 70 : isRandomYear ? Math.floor(Math.random() * 100) : 0,
+      expected: isRealYear ? 100 : isRandomYear ? Math.floor(Math.random() * 100) : 0,
+    });
+    return [
+      { name: '17-20', ...generate() },
+      { name: '21-25', ...generate() },
+      { name: '26-30', ...generate() },
+      { name: '31-35', ...generate() },
+      { name: '36-40', ...generate() },
+      { name: '41-45', ...generate() },
+      { name: '50-89', ...generate() },
+    ];
+  };
 
   const timeframeOptions = [
-    { label: "Jan 2024", value: "jan-2024" },
-    { label: "Feb 2024", value: "feb-2024" },
-    { label: "Mar 2024", value: "mar-2024" },
-    { label: "Apr 2024", value: "apr-2024" },
-    { label: "May 2024", value: "may-2024" },
+    { label: "2025", value: "2025" },
+    { label: "2026", value: "2026" },
+    { label: "2027", value: "2027" },
+    { label: "2028", value: "2028" },
+    { label: "2029", value: "2029" },
+    { label: "2030", value: "2030" },
   ];
 
-  const pieData = [
-  { name: 'Delhi', value: 34, color: '#fb5531' },
-  { name: 'Mumbai', value: 28, color: '#20c997' },
-  { name: 'UP', value: 16, color: '#845ef7' },
-  { name: 'Gujrat', value: 23, color: '#3b82f6' },
-];
-  const COLORS = ['#f87171', '#fbbf24', '#60a5fa', '#34d399'];
+  type BookingData = {
+  day: string;
+  online: number;
+  offline: number;
+};
 
-  const barData = [
-    { name: '17-20', actual: 70, expected: 100 },
-    { name: '21-25', actual: 50, expected: 60 },
-    { name: '26-30', actual: 30, expected: 40 },
-    { name: '31-35', actual: 40, expected: 50 },
-    { name: '36-40', actual: 20, expected: 30 },
-    { name: '41-45', actual: 80, expected: 70 },
-    { name: '50-89', actual: 60, expected: 75 },
-  ];
+const revenueData = [
+  { day: 'Monday', online: 14000, offline: 12000 },
+  { day: 'Tuesday', online: 18500, offline: 13500 },
+  { day: 'Wednesday', online: 3500, offline: 12500 },
+  { day: 'Thursday', online: 23000, offline: 10000 },
+  { day: 'Friday', online: 6000, offline: 7000 },
+  { day: 'Saturday', online: 13000, offline: 11000 },
+  { day: 'Sunday', online: 15000, offline: 9000 },
+]
 
-  const performanceData = [
+type CardData = {
+  title: string;
+  subtitle: string;
+  amount?: string;
+  count?: number;
+  percentage: string;
+  percentValue: number;
+  status?: string;
+  showProgress?: boolean;
+};
+
+const cardData: CardData[] = [
   {
-    label: "Beds Booked",
-    value: 1000,
-    change: "+8%",
-    icon: '/bedbooking.png',
-    bg: "bg-pink-100",
-    iconBg: "#ff6584"
+    title: "Analytics",
+    subtitle: "Lorem Ipsum",
+    amount: "Rs. 56873.12",
+    percentage: "+16%",
+    percentValue: 70,
+    showProgress: true,
   },
   {
-    label: "Total Orders",
-    value: 300,
-    change: "+5%",
-    icon: '/totaloders.png',
-    bg: "bg-orange-100",
-    iconBg: "#ff9f68"
+    title: "Ambulance Service",
+    subtitle: "Lorem Ipsum",
+    count: 89,
+    percentage: "+16%",
+    percentValue: 0,
+    status: "On Route",
+    showProgress: false,
   },
-  {
-    label: "Medicines Sold",
-    value: 5,
-    change: "-12%",
-    icon: '/medicinessold.png',
-    bg: "bg-green-100",
-    iconBg: "#34d399"
-  },
-  {
-    label: "Home Service",
-    value: 8,
-    change: "0.5%",
-    icon: '/homeservies.png',
-    bg: "bg-purple-100",
-    iconBg: "#a78bfa"
-  }
 ];
 
+type HospitalCardData = {
+  title: string;
+  subtitle: string;
+  roomsBooked: number;
+  growth: string;
+  growthColor: string;
+  dateRange: string;
+  chartData: { day: string; last6Days: number; lastWeek: number }[];
+  vendorId: string;
+  vendorName: string;
+  hospitalName: string;
+  hospitalLocation: string;
+};
+
+const cardData1: HospitalCardData[] = [
+  {
+    title: "Hospital Service",
+    subtitle: "Lorem Ipsum",
+    roomsBooked: 7852,
+    growth: "+2.1%",
+    growthColor: "text-green-500",
+    dateRange: "1–12 Jan, 2024",
+    chartData: [
+      { day: "01", last6Days: 10, lastWeek: 8 },
+      { day: "02", last6Days: 11, lastWeek: 9 },
+      { day: "03", last6Days: 12, lastWeek: 9 },
+      { day: "04", last6Days: 9, lastWeek: 8 },
+      { day: "05", last6Days: 13, lastWeek: 10 },
+      { day: "06", last6Days: 16, lastWeek: 9 },
+      { day: "07", last6Days: 10, lastWeek: 8 },
+      { day: "08", last6Days: 9, lastWeek: 7 },
+      { day: "09", last6Days: 11, lastWeek: 8 },
+      { day: "10", last6Days: 12, lastWeek: 9 },
+      { day: "11", last6Days: 13, lastWeek: 10 },
+      { day: "12", last6Days: 14, lastWeek: 11 },
+    ],
+    vendorId: "#1234567–YUISOP",
+    vendorName: "Lorem Ipsum",
+    hospitalName: "Max Speciality Hospital",
+    hospitalLocation: "Delhi",
+  },
+];
+
+const patientInsightsData = [
+  { month: "Jan", loyal: 390, new: 350, unique: 410 },
+  { month: "Feb", loyal: 370, new: 300, unique: 390 },
+  { month: "Mar", loyal: 350, new: 330, unique: 370 },
+  { month: "Apr", loyal: 360, new: 340, unique: 360 },
+  { month: "May", loyal: 370, new: 350, unique: 350 },
+  { month: "Jun", loyal: 390, new: 370, unique: 340 },
+  { month: "Jul", loyal: 410, new: 390, unique: 330 },
+  { month: "Aug", loyal: 400, new: 410, unique: 320 },
+  { month: "Sept", loyal: 300, new: 350, unique: 310 },
+  { month: "Oct", loyal: 200, new: 280, unique: 300 },
+  { month: "Nov", loyal: 150, new: 220, unique: 290 },
+  { month: "Dec", loyal: 100, new: 180, unique: 280 },
+];
+
+const statCards = [
+  { title: "Lorem Ipsum", value: 13, percentage: "+2.1%", positive: true },
+  { title: "Lorem Ipsum", value: 20, percentage: "+23.6%", positive: true },
+  { title: "Lorem Ipsum", value: 15, percentage: "-11%", positive: false },
+  { title: "Lorem Ipsum", value: 13, percentage: "+2.1%", positive: true },
+  { title: "Lorem Ipsum", value: 13, percentage: "+23.6%", positive: true },
+  { title: "Lorem Ipsum", value: 13, percentage: "-11%", positive: false },
+];
+
+
+  const [selectedTimeframe, setSelectedTimeframe] = useState("Daily");
+  const [open, setOpen] = useState(false);
 
   return (
     <div className="min-h-screen flex justify-center px-4">
@@ -137,9 +291,13 @@ const Dashboard = () => {
             <p className="text-1xl text-gray-400">{adminData.location}</p>
           </div>
           <div className="flex flex-wrap items-center gap-4">
-            <select className="border rounded-md px-6 py-2">
-              {timeframeOptions.map((option, index) => (
-                <option key={index} value={option.value}>{option.label}</option>
+            <select
+              className="border rounded-md px-6 py-2"
+              value={selectedYear}
+              onChange={(e) => setSelectedYear(e.target.value)}
+            >
+              {timeframeOptions.map((option) => (
+                <option key={option.value} value={option.value}>{option.label}</option>
               ))}
             </select>
             <button className="bg-gray-100 px-6 py-2 rounded-md text-sm">Export CSV</button>
@@ -149,125 +307,38 @@ const Dashboard = () => {
 
         {/* Summary Cards */}
         <div className="flex flex-wrap justify-center gap-5">
-          {cardsData.map(item => (
+          {getCardsData().map(item => (
             <SummaryCard key={item.id} item={item} />
           ))}
         </div>
 
         {/* Overview Stats */}
-        <div className="flex flex-wrap justify-center gap-8 bg-white rounded-xl shadow p-5 lg:mx-2">
-          {data.map((item, index) => (
-            <div
-              key={index}
-              className="flex items-center gap-4 w-full sm:w-72 last:border-none pb-4 sm:pb-0 sm:pr-4"
-            >
-              <div className="bg-black rounded-full p-4">
-                <Image src={item.icon} alt="icon" width={55} height={55} />
-              </div>
-              <div>
-                <h4 className="text-sm font-semibold text-gray-500">{item.title}</h4>
-                <p className="text-2xl font-bold text-gray-900">{item.count}</p>
-                <p className={`text-sm mt-1 ${item.change >= 0 ? "text-green-600" : "text-red-600"}`}>
-                  {item.change >= 0 ? "↑" : "↓"} {Math.abs(item.change)}%
-                  <span className="text-gray-500"> this month</span>
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
+        <OverviewStats data={getOverviewStats()} />
 
-        {/* Chart & Performance Section */}
-        <div className="grid lg:grid-cols-3 gap-6 mt-6">
-
-          {/* Pie Chart */}
-          <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-sm">
-      <h3 className="text-lg font-semibold text-gray-800 mb-4">Area Wise Bookings</h3>
-
-      <ResponsiveContainer width="100%" height={250}>
-        <PieChart>
-          <Pie
-            data={pieData}
-            dataKey="value"
-            nameKey="name"
-            outerRadius={80}
-            label={({ percent }) => `${(percent * 100).toFixed(0)}%`}
-          >
-            {pieData.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={entry.color} />
-            ))}
-          </Pie>
-          <Tooltip />
-        </PieChart>
-      </ResponsiveContainer>
-
-      {/* Legend */}
-      <div className="mt-4 flex flex-col gap-2">
-        {pieData.map((entry, index) => (
-          <div key={index} className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: entry.color }}></div>
-            <span className="text-sm text-gray-700">{entry.name}</span>
-            <span className="ml-auto font-semibold text-gray-900">{entry.value}%</span>
-          </div>
-        ))}
-      </div>
-    </div>
-
-          {/* Bar Chart */}
-          {/* Inventory vs Utilization Bar Chart */}
-<div className="bg-white p-6 rounded-lg shadow-md col-span-2">
-  <h3 className="text-lg font-semibold text-gray-800 mb-4">Inventory v/s Utilization</h3>
-  <ResponsiveContainer width="100%" height={300}>
-    <BarChart data={barData} barSize={30}>
-      <XAxis dataKey="name" />
-      <YAxis />
-      <Tooltip />
-      <Legend
-        verticalAlign="top"
-        align="right"
-        iconType="circle"
-        formatter={(value) =>
-          value === "actual" ? (
-            <span className="text-blue-400">Actual</span>
-          ) : (
-            <span className="text-black">Expected</span>
-          )
-        }
-      />
-      <Bar dataKey="actual" fill="#93c5fd" name="actual" />
-      <Bar dataKey="expected" fill="#000000" name="expected" />
-    </BarChart>
-  </ResponsiveContainer>
-</div>
-
-
-          
-        </div>
+        {/* Charts */}
+        <ChartsSection pieData={getPieData()} barData={getBarData()} />
 
         {/* Performance Cards */}
-        <div className="mt-6">
-  <h2 className="text-xl font-bold text-[#1C1C45]">Performance Overview</h2>
-  <p className="text-sm text-gray-500 mt-1">Today Summary</p>
+        <PerformanceOverview data={getPerformanceData()} />
 
-  <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
-    {performanceData.map((item, index) => (
-      <div
-        key={index}
-        className={`rounded-2xl p-5 flex justify-between items-center ${item.bg}`}
-      >
-        <div>
-          <p className="text-3xl font-extrabold text-[#1C1C45]">{item.value}</p>
-          <p className="text-sm text-[#1C1C45] font-medium mt-1">{item.label}</p>
-          <p className={`text-xs mt-1 ${item.change.startsWith('-') ? 'text-red-500' : 'text-green-500'}`}>
-            {item.change} from yesterday
-          </p>
-        </div>
-          <Image src={item.icon} alt={item.label} width={50} height={50} />
-        
-      </div>
-    ))}
-  </div>
-</div>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+      <TotalRevenue
+        revenueData={revenueData}
+        selectedTimeframe={selectedTimeframe}
+        setSelectedTimeframe={setSelectedTimeframe}
+        timeframes={timeframes}
+        open={open}
+        setOpen={setOpen}
+      />
+      <AnalyticsCardList cardData={cardData} />
+      <HospitalServiceCards cardData1={cardData1} />
+    </div>
 
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <PatientInsightsChart data={patientInsightsData} />
+      <StatCardsGrid cards={statCards} />
+    </div>
+          
       </div>
     </div>
   );
