@@ -100,10 +100,12 @@ export function DashboardNavbar() {
             </div>
 
             {/* Notifications */}
-            <div className="bg-white p-2 rounded-full shadow-sm border border-[#F8F9FA] relative">
-              <Bell className="h-5 w-5" />
-              <span className="absolute top-1 right-1 w-2 h-2 bg-primary rounded-full" />
-            </div>
+            <Link href="/dashboard/notification">
+              <div className="bg-white p-2 rounded-full shadow-sm border border-[#F8F9FA] relative cursor-pointer hover:shadow-md transition">
+                <Bell className="h-5 w-5" />
+                <span className="absolute top-1 right-1 w-2 h-2 bg-primary rounded-full" />
+              </div>
+            </Link>
 
             {/* Profile */}
             <div className="bg-white px-3 py-2 rounded-full shadow-sm border border-[#F8F9FA] flex items-center gap-3">
