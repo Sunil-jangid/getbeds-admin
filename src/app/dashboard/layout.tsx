@@ -1,5 +1,6 @@
 import { DashboardNavbar } from "@/components/dashboard/navbar"
 import { Breadcrumb } from "@/components/dashboard/breadcrumb"
+import Footer from "@/components/dashboard/Footer";
 
 export default function DashboardLayout({
   children,
@@ -13,6 +14,7 @@ export default function DashboardLayout({
       <main className="flex-1">
         {children}
       </main>
+      <Footer />
     </div>
   )
 }
