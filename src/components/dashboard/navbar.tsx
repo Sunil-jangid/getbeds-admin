@@ -1,16 +1,11 @@
-'use client'
+'use client';
 
-import Link from 'next/link'
-import { cn } from '@/lib/utils'
-import { usePathname } from 'next/navigation'
-import { Bell, ChevronDown, Search, User } from 'lucide-react'
-import Image from 'next/image'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { Bell, ChevronDown, Search, User } from 'lucide-react';
+import Image from 'next/image';
+import { cn } from '@/lib/utils';
+import { useState, useRef, useEffect } from 'react';
 
 const navItems = [
   { name: 'Overview', href: '/dashboard' },
@@ -27,61 +22,98 @@ const navItems = [
   },
   { name: 'Payment', href: '/dashboard/Payment' },
   { name: 'Analytics', href: '/dashboard/analytics' },
-]
+];
 
 export function DashboardNavbar() {
-  const pathname = usePathname()
+  const pathname = usePathname();
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const profileRef = useRef<HTMLDivElement>(null);
+  const navRef = useRef<HTMLDivElement>(null);
+
+  const menuItems = [
+    'Profile',
+    'User Management',
+    'Customer Support',
+    'Subscription Plan',
+    'Settings',
+    'Log out',
+  ];
+
+  // Handle outside clicks for both dropdowns
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        profileRef.current && !profileRef.current.contains(event.target as Node)
+      ) {
+        setIsProfileOpen(false);
+      }
+
+      if (
+        navRef.current && !navRef.current.contains(event.target as Node)
+      ) {
+        setOpenDropdown(null);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   return (
     <nav className="sticky top-0 z-50 px-4 py-3 bg-background">
       <div className="max-w-7xl mx-auto">
         <div className="bg-white rounded-[40px] shadow-lg border border-[#F8F9FA] px-6 py-4 flex items-center justify-between">
           
-          {/* Logo Section */}
+          {/* Logo */}
           <div className="flex-shrink-0">
             <Link href="/dashboard" className="flex items-center gap-2">
-              <Image
-                src="/logo.png"
-                alt="GetBeds"
-                width={32}
-                height={32}
-                className="rounded"
-              />
+              <Image src="/logo.png" alt="GetBeds" width={32} height={32} className="rounded" />
               <span className="font-bold text-xl">GetBeds</span>
             </Link>
           </div>
 
           {/* Navigation Links */}
-          <div className="flex items-center gap-1 bg-background/50 backdrop-blur-sm px-2 rounded-full">
+          <div className="flex items-center gap-1 bg-background/50 backdrop-blur-sm px-2 rounded-full" ref={navRef}>
             {navItems.map((item) => {
+              const isDropdownOpen = openDropdown === item.name;
+
               if (item.dropdownItems) {
                 return (
-                  <DropdownMenu key={item.href}>
-                    <DropdownMenuTrigger className="px-4 py-2 rounded-full text-sm font-medium transition-colors hover:bg-gray-100 flex items-center gap-1">
+                  <div key={item.href} className="relative">
+                    <button
+                      onClick={() => setOpenDropdown(isDropdownOpen ? null : item.name)}
+                      className="px-4 py-2 rounded-full text-sm font-medium transition-colors hover:bg-gray-100 flex items-center gap-1"
+                    >
                       {item.name}
                       <ChevronDown className="h-4 w-4" />
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent className="p-0 w-56 overflow-hidden mt-2">
-                      {item.dropdownItems.map((dropdownItem) => {
-                        const isActive = pathname === dropdownItem.href;
-                        return (
-                          <DropdownMenuItem
-                            key={dropdownItem.href}
-                            className={cn(
-                              "cursor-pointer px-4 py-2 text-sm transition-colors w-full",
-                              isActive ? "bg-black text-white" : "hover:bg-gray-100 text-black"
-                            )}
-                            asChild
-                          >
-                            <Link href={dropdownItem.href} className="block w-full">
+                    </button>
+
+                    {isDropdownOpen && (
+                      <div className="absolute top-full mt-2 w-56 bg-white border border-gray-200 rounded-2xl shadow-lg z-50 overflow-hidden">
+                        {item.dropdownItems.map((dropdownItem, index) => {
+                          const isActive = pathname === dropdownItem.href;
+                          return (
+                            <Link
+                              key={dropdownItem.href}
+                              href={dropdownItem.href}
+                              onClick={() => setOpenDropdown(null)}
+                              className={cn(
+                                'block px-4 py-2 text-sm transition-all w-full',
+                                index === 0 ? 'rounded-t-2xl' : '',
+                                index === item.dropdownItems.length - 1 ? 'rounded-b-2xl' : '',
+                                isActive
+                                  ? 'bg-black text-white'
+                                  : 'hover:bg-black hover:text-white text-black'
+                              )}
+                            >
                               {dropdownItem.name}
                             </Link>
-                          </DropdownMenuItem>
-                        );
-                      })}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                )
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                );
               }
 
               return (
@@ -97,18 +129,18 @@ export function DashboardNavbar() {
                 >
                   {item.name}
                 </Link>
-              )
+              );
             })}
           </div>
 
-          {/* Right Side Actions */}
+          {/* Right-side icons */}
           <div className="flex items-center gap-4">
             {/* Search */}
             <div className="bg-white p-2 rounded-full shadow-sm border border-[#F8F9FA]">
               <Search className="h-5 w-5" />
             </div>
 
-            {/* Notifications */}
+            {/* Notification */}
             <Link href="/dashboard/notification">
               <div className="bg-white p-2 rounded-full shadow-sm border border-[#F8F9FA] relative cursor-pointer hover:shadow-md transition">
                 <Bell className="h-5 w-5" />
@@ -116,19 +148,41 @@ export function DashboardNavbar() {
               </div>
             </Link>
 
-            {/* Profile */}
-            <div className="bg-white px-3 py-2 rounded-full shadow-sm border border-[#F8F9FA] flex items-center gap-3">
-              <div className="flex flex-col">
-                <span className="text-sm font-medium">John Doe</span>
-                <span className="text-xs text-muted-foreground">Admin</span>
+            {/* Profile Dropdown */}
+            <div className="relative" ref={profileRef}>
+              <div
+                onClick={() => setIsProfileOpen(!isProfileOpen)}
+                className="bg-white px-3 py-2 rounded-full shadow-sm border border-[#F8F9FA] flex items-center gap-3 cursor-pointer"
+              >
+                <div className="flex flex-col text-right">
+                  <span className="text-sm font-medium text-black">John Doe</span>
+                  <span className="text-xs text-muted-foreground text-gray-500">Admin</span>
+                </div>
+                <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
+                  <User className="h-5 w-5 text-gray-600" />
+                </div>
               </div>
-              <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
-                <User className="h-5 w-5" />
-              </div>
+
+              {isProfileOpen && (
+                <div className="absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-2xl shadow-lg overflow-hidden z-50">
+                  {menuItems.map((item, index) => (
+                    <Link
+                      key={item}
+                      href="/"
+                      onClick={() => setIsProfileOpen(false)}
+                      className={`block px-4 py-2 text-sm transition-all duration-300 hover:bg-black hover:text-white ${
+                        index === 0 ? 'font-medium rounded-t-2xl' : ''
+                      } ${index === menuItems.length - 1 ? 'rounded-b-2xl' : ''}`}
+                    >
+                      {item}
+                    </Link>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>
       </div>
     </nav>
-  )
+  );
 }

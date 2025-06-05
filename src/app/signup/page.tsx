@@ -1,3 +1,4 @@
+
 "use client";
 import React, { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
@@ -73,30 +74,24 @@ const LoginPage = () => {
       </div>
 
       {/* Right Panel (Form) */}
-      <div className="md:w-1/2 w-full flex justify-center items-center p-8 bg-gradient-to-br from-white to-gray-50">
+      <div className="md:w-1/2 w-full flex justify-center items-center p-6 bg-gradient-to-br from-white to-gray-50">
         <div className="w-full max-w-sm space-y-3">
-          <h2 className="text-2xl font-semibold">Login</h2>
+          <h2 className="text-2xl font-semibold">Create an account</h2>
           <p className="text-sm text-gray-500">
-            New to this account?{" "}
-            <a href="/signup" className="text-black hover:underline">
-              Sign in
+            Already have an account?{" "}
+            <a href="/" className="text-black hover:underline">
+              Log in
             </a>
           </p>
 
-          {/* Role Selection */}
-          <div className="flex space-x-4">
-            {["Admin", "Hospital", "Diagnostic Centre"].map((role) => (
-              <label key={role} className="flex items-center space-x-1">
-                <input
-                  type="radio"
-                  name="role"
-                  value={role}
-                  checked={selectedRole === role}
-                  onChange={() => handleRoleChange(role)}
-                />
-                <span>{role}</span>
-              </label>
-            ))}
+          {/* user name */}
+          <div>
+            <label className="text-sm font-medium">User name</label>
+            <input
+              type="email"
+              className="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+              placeholder="Enter user name"
+            />
           </div>
 
           {/* Email */}
@@ -126,11 +121,10 @@ const LoginPage = () => {
                 {passwordVisible ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
             </div>
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-gray-500">
               Use 8 or more characters with a mix of letters, numbers & symbols
             </p>
           </div>
-            <br />
           {/* Terms */}
           <p className="text-xs text-gray-500">
             By creating an account, you agree to our{" "}
@@ -151,18 +145,18 @@ const LoginPage = () => {
             />
           </div>
           {/* Login Button */}
-          <Link href="/dashboard">
+          <Link href="/">
   <button
     className="w-full py-2 rounded-md text-white transition-colors bg-gray-400 hover:bg-black mt-3"
   >
-    Login
+    Create an accrount
   </button>
 </Link>
 
           <p className="text-sm text-center text-gray-500">
-            New to an account?{" "}
-            <a href="/signup" className="text-black hover:underline">
-              Sign in
+            Already have an account?{" "}
+            <a href="/" className="text-black hover:underline">
+              Log in
             </a>
           </p>
         </div>
@@ -172,5 +166,3 @@ const LoginPage = () => {
 };
 
 export default LoginPage;
-
-
