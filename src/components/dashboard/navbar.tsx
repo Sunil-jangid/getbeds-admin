@@ -13,19 +13,20 @@ import {
 } from "@/components/ui/dropdown-menu"
 
 const navItems = [
-  { name: 'Dashboard', href: '/dashboard' },
-  { name: 'Hospital Beds', href: '/dashboard/hospitals' },
+  { name: 'Overview', href: '/dashboard' },
   { name: 'Bookings', href: '/dashboard/bookings' },
-  { name: 'Analytics', href: '/dashboard/analytics' },
   {
     name: 'Inventory',
     href: '/dashboard/inventory',
     dropdownItems: [
       { name: 'Manage Hospitals', href: '/dashboard/inventory/hospitals' },
+      { name: 'Manage Ambulance', href: '/dashboard/inventory/ambulance' },
+      { name: 'Manage Diagnostic Centres', href: '/dashboard/inventory/diagnostic' },
       { name: 'Manage Users', href: '/dashboard/inventory/users' },
-      { name: 'Approvals', href: '/dashboard/inventory/approvals' },
     ]
-  }
+  },
+  { name: 'Payment', href: '/dashboard/Payment' },
+  { name: 'Analytics', href: '/dashboard/analytics' },
 ]
 
 export function DashboardNavbar() {
@@ -35,6 +36,7 @@ export function DashboardNavbar() {
     <nav className="sticky top-0 z-50 px-4 py-3 bg-background">
       <div className="max-w-7xl mx-auto">
         <div className="bg-white rounded-[40px] shadow-lg border border-[#F8F9FA] px-6 py-4 flex items-center justify-between">
+          
           {/* Logo Section */}
           <div className="flex-shrink-0">
             <Link href="/dashboard" className="flex items-center gap-2">
@@ -59,17 +61,24 @@ export function DashboardNavbar() {
                       {item.name}
                       <ChevronDown className="h-4 w-4" />
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent>
-                      {item.dropdownItems.map((dropdownItem) => (
-                        <DropdownMenuItem key={dropdownItem.href}>
-                          <Link
-                            href={dropdownItem.href}
-                            className="w-full"
+                    <DropdownMenuContent className="p-0 w-56 overflow-hidden mt-2">
+                      {item.dropdownItems.map((dropdownItem) => {
+                        const isActive = pathname === dropdownItem.href;
+                        return (
+                          <DropdownMenuItem
+                            key={dropdownItem.href}
+                            className={cn(
+                              "cursor-pointer px-4 py-2 text-sm transition-colors w-full",
+                              isActive ? "bg-black text-white" : "hover:bg-gray-100 text-black"
+                            )}
+                            asChild
                           >
-                            {dropdownItem.name}
-                          </Link>
-                        </DropdownMenuItem>
-                      ))}
+                            <Link href={dropdownItem.href} className="block w-full">
+                              {dropdownItem.name}
+                            </Link>
+                          </DropdownMenuItem>
+                        );
+                      })}
                     </DropdownMenuContent>
                   </DropdownMenu>
                 )
@@ -81,8 +90,8 @@ export function DashboardNavbar() {
                   href={item.href}
                   className={cn(
                     'px-4 py-2 rounded-full text-sm font-medium transition-colors',
-                    pathname === item.href 
-                      ? 'bg-black text-white' 
+                    pathname === item.href
+                      ? 'bg-black text-white'
                       : 'text-black hover:bg-gray-100'
                   )}
                 >
