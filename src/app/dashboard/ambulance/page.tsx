@@ -58,36 +58,7 @@ const hospitalData1 = {
 
 // ✅ Hospital Data
 const hospitalData: Hospital[] = [
-  {
-    name: "Max Super Speciality Hospital",
-    earnings: "Rs. 54,967",
-    isPositive: true,
-    color: "bg-green-500",
-  },
-  {
-    name: "Lorem Ipsum",
-    earnings: "Rs. 34,567",
-    isPositive: false,
-    color: "bg-red-400",
-  },
-  {
-    name: "GTR New Hospital",
-    earnings: "Rs. 22,456",
-    isPositive: true,
-    color: "bg-green-500",
-  },
-  {
-    name: "Medanta City Hospital",
-    earnings: "Rs. 11,567",
-    isPositive: false,
-    color: "bg-red-400",
-  },
-  {
-    name: "Lorem Ipsum",
-    earnings: "Rs. 10,567",
-    isPositive: false,
-    color: "bg-red-400",
-  },
+  
 ];
 
 // ✅ TotalPatientsChart sample data
@@ -143,7 +114,6 @@ export default function Home() {
       />
       ))}
 
-      {/* Summary Cards */}
       
         
         

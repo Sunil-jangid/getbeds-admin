@@ -56,7 +56,7 @@ const Dashboard = () => {
           : isRandomYear
             ? generateRandomData(400, 1300, 360)
             : Array(360).fill(0),
-            link:"/dashboard/",
+            link:"/dashboard/ambulance/",
       },
       {
         id: "diagnostic",
@@ -68,7 +68,7 @@ const Dashboard = () => {
           : isRandomYear
             ? generateRandomData(200, 900, 360)
             : Array(360).fill(0),
-            link:"/dashboard/",
+            link:"/dashboard/Diagnostic/",
       },
     ];
   };

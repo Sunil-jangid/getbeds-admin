@@ -1,6 +1,5 @@
 "use client";
 
-import React, { useState } from "react";
 import {
   PieChart,
   Pie,
@@ -14,6 +13,56 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { ChevronDown } from "lucide-react";
+import React, { useEffect, useMemo, useState } from "react";
+import { faker } from "@faker-js/faker";
+import { format, subDays, subMonths, subYears, isAfter, parseISO } from "date-fns";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+
+interface PaymentData {
+  user: string;
+  address: string;
+  date: string;
+  amount: number;
+}
+
+interface HospitalData {
+  hospitalId: string;
+  hospitalName: string;
+  location: string;
+  dateOfRegistered: string;
+  hospitalApprovalStatus: "Approved" | "Pending";
+  revenueGenerated: number;
+}
+
+const generateRandomPaymentData = (count: number): PaymentData[] => {
+  const data: PaymentData[] = [];
+  for (let i = 0; i < count; i++) {
+    const randomDate = faker.date.between({ from: "2020-01-01", to: new Date() });
+    data.push({
+      user: faker.person.fullName(),
+      address: `${faker.location.streetAddress()}, ${faker.location.city()}`,
+      date: format(randomDate, "dd.MMM.yyyy"),
+      amount: faker.number.int({ min: 500, max: 10000 }),
+    });
+  }
+  return data;
+};
+
+const generateRandomHospitalData = (count: number): HospitalData[] => {
+  const data: HospitalData[] = [];
+  for (let i = 0; i < count; i++) {
+    const randomDate = faker.date.between({ from: "2020-01-01", to: new Date() });
+    data.push({
+      hospitalId: `#${faker.string.numeric(6)}`,
+      hospitalName: faker.company.name(),
+      location: `${faker.location.city()}, ${faker.location.state()}`,
+      dateOfRegistered: format(randomDate, "dd.MMM.yyyy"),
+      hospitalApprovalStatus: faker.helpers.arrayElement(["Approved", "Pending"]),
+      revenueGenerated: faker.number.int({ min: 500, max: 10000 }) * 100, // Larger revenue
+    });
+  }
+  return data;
+};
 
 const pieData = [
   { name: "Payments Done", value: 63, color: "#000" },
@@ -75,9 +124,79 @@ export default function AnalyticsDashboard() {
     "Spending"
   );
   const total = donutData.reduce((sum, d) => sum + d.value, 0);
-  const [selectedRange, setSelectedRange] = useState("Monthly");
+  const [selectedRange, setSelectedRange] = useState("Monthly"); // This state is not currently used in the provided snippet
+  const [activeTab, setActiveTab] = useState("Users");
+  const [filterRange, setFilterRange] = useState("All");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const perPage = 12;
+
+  const allPaymentData = useMemo(() => generateRandomPaymentData(500), []);
+  const allHospitalData = useMemo(() => generateRandomHospitalData(100), []); // Generate hospital data
+
+  const filteredPaymentData = useMemo(() => {
+    let data = [...allPaymentData];
+    const now = new Date();
+
+    if (filterRange === "Last Week") {
+      data = data.filter(d => isAfter(parseISO(format(new Date(d.date), "yyyy-MM-dd")), subDays(now, 7)));
+    } else if (filterRange === "Last Month") {
+      data = data.filter(d => isAfter(parseISO(format(new Date(d.date), "yyyy-MM-dd")), subMonths(now, 1)));
+    } else if (filterRange === "Last Year") {
+      data = data.filter(d => isAfter(parseISO(format(new Date(d.date), "yyyy-MM-dd")), subYears(now, 1)));
+    }
+
+    if (searchTerm) {
+      data = data.filter(d =>
+        d.user.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        d.address.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+    return data;
+  }, [filterRange, searchTerm, allPaymentData]);
+
+  const filteredHospitalData = useMemo(() => {
+    let data = [...allHospitalData];
+    const now = new Date();
+
+    if (filterRange === "Last Week") {
+      data = data.filter(d => isAfter(parseISO(format(new Date(d.dateOfRegistered), "yyyy-MM-dd")), subDays(now, 7)));
+    } else if (filterRange === "Last Month") {
+      data = data.filter(d => isAfter(parseISO(format(new Date(d.dateOfRegistered), "yyyy-MM-dd")), subMonths(now, 1)));
+    } else if (filterRange === "Last Year") {
+      data = data.filter(d => isAfter(parseISO(format(new Date(d.dateOfRegistered), "yyyy-MM-dd")), subYears(now, 1)));
+    }
+
+    if (searchTerm) {
+      data = data.filter(d =>
+        d.hospitalName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        d.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        d.hospitalId.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        d.hospitalApprovalStatus.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+    return data;
+  }, [filterRange, searchTerm, allHospitalData]);
+
+  const currentTableData = activeTab === "Users" ? filteredPaymentData : filteredHospitalData;
+
+  const paginatedData = useMemo(() => {
+    const start = (currentPage - 1) * perPage;
+    return currentTableData.slice(start, start + perPage);
+  }, [currentTableData, currentPage]);
+
+  const totalPages = Math.ceil(currentTableData.length / perPage);
+  const maxPageButtons = 5;
+  const startPage = Math.max(1, currentPage - 2);
+  const endPage = Math.min(totalPages, startPage + maxPageButtons - 1);
+
+  // Reset page when tab or filter changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [activeTab, filterRange, searchTerm]);
 
   return (
+    <div>
     <div className="p-8 grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-4 max-w-full">
       {/* 1. Payment Summary */}
       <div className="bg-white rounded-2xl p-4 shadow flex flex-col md:flex-row items-center md:items-start col-span-1 max-w-[450px]">
@@ -236,6 +355,143 @@ export default function AnalyticsDashboard() {
           </div>
         </div>
       </div>
+    </div>
+    <div className="bg-white rounded-2xl p-7 shadow mt-[-20]">
+    <div className="bg-white rounded-2xl p-4 shadow">
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-xl font-semibold">Payment Details</h2>
+        <div className="flex gap-2 rounded-full bg-gray-100 p-1">
+          {['Users', 'Hospitals'].map((tab) => (
+            <button
+              key={tab}
+              className={`px-4 py-1 rounded-full ${activeTab === tab ? 'bg-white text-black shadow' : 'text-gray-500'}`}
+              onClick={() => setActiveTab(tab)}
+            >
+              {tab}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="flex justify-between mb-4">
+        <div className="flex items-center border rounded px-3 py-1 gap-2 w-full max-w-md">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1110.5 3a7.5 7.5 0 016.15 13.65z" /></svg>
+          <input
+            type="text"
+            placeholder="Search"
+            className="outline-none w-full"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          
+        </div>
+        <button className="ml-2 bg-black text-white px-4 py-1 rounded">Search</button>
+
+        <div className="flex ml-auto">
+  <div className="flex rounded-full border overflow-hidden">
+    {['All', 'Last Week', 'Last Month', 'Last Year'].map((label, index) => (
+      <button
+        key={label}
+        className={`px-4 py-1 text-sm font-medium transition-colors duration-200
+          ${filterRange === label ? 'bg-black text-white' : 'bg-white text-black'}
+          ${index === 0 ? 'rounded-l-full' : ''}
+          ${index === 3 ? 'rounded-r-full' : ''}
+        `}
+        onClick={() => setFilterRange(label)}
+      >
+        {label}
+      </button>
+    ))}
+  </div>
+</div>
+
+      </div>
+
+      {activeTab === 'Users' ? (
+        <table className="w-full text-sm text-left border-collapse">
+          <thead>
+            <tr className="text-gray-500 text-xs border-b">
+              <th className="py-2">Users</th>
+              <th className="py-2">Address</th>
+              <th className="py-2">Date</th>
+              <th className="py-2">Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            {paginatedData.map((entry, index) => (
+              <tr key={index} className="border-b hover:bg-gray-50">
+                <td className="py-2">{(entry as PaymentData).user}</td>
+                <td className="py-2">{(entry as PaymentData).address}</td>
+                <td className="py-2">{(entry as PaymentData).date}</td>
+                <td className="py-2">Rs. {(entry as PaymentData).amount}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ) : (
+        <table className="w-full text-sm text-left border-collapse">
+          <thead>
+            <tr className="text-gray-500 text-xs border-b">
+              <th className="py-2">Hospital ID</th>
+              <th className="py-2">Hospital Name</th>
+              <th className="py-2">Location</th>
+              <th className="py-2">Date of Registered</th>
+              <th className="py-2">Hospital Approval Status</th>
+              <th className="py-2">Revenue Generated</th>
+            </tr>
+          </thead>
+          <tbody>
+            {paginatedData.map((entry, index) => (
+              <tr key={index} className="border-b hover:bg-gray-50">
+                <td className="py-2">{(entry as HospitalData).hospitalId}</td>
+                <td className="py-2">{(entry as HospitalData).hospitalName}</td>
+                <td className="py-2">{(entry as HospitalData).location}</td>
+                <td className="py-2">{(entry as HospitalData).dateOfRegistered}</td>
+                <td className="py-2">
+                  <span className={`
+                    inline-flex justify-center items-center
+                    px-4 py-1 rounded-md text-xs font-semibold w-24 text-center
+                    ${(entry as HospitalData).hospitalApprovalStatus === 'Approved' ? 'bg-black text-white' : 'bg-red-100 text-red-700'}
+                  `}>
+                    {(entry as HospitalData).hospitalApprovalStatus}
+                  </span>
+                </td>
+                <td className="py-2">Rs. {(entry as HospitalData).revenueGenerated.toLocaleString()}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+
+      <div className="flex justify-between items-center mt-6 text-sm text-gray-500">
+        <span> </span>
+        <div className="flex items-center gap-1">
+          <button
+            onClick={() => setCurrentPage(p => Math.max(p - 1, 1))}
+            disabled={currentPage === 1}
+            className="px-2"
+          >
+            <ChevronLeft size={16} />
+          </button>
+          {Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i).map((page) => (
+            <button
+              key={page}
+              onClick={() => setCurrentPage(page)}
+              className={`px-3 py-1 rounded ${page === currentPage ? 'bg-black text-white' : 'border'}`}
+            >
+              {page}
+            </button>
+          ))}
+          <button
+            onClick={() => setCurrentPage(p => Math.min(p + 1, totalPages))}
+            disabled={currentPage === totalPages}
+            className="px-2"
+          >
+            <ChevronRight size={16} />
+          </button>
+        </div>
+      </div>
+    </div></div>
     </div>
   );
 }
