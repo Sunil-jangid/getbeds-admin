@@ -83,21 +83,7 @@ const LoginPage = () => {
             </a>
           </p>
 
-          {/* Role Selection */}
-          <div className="flex space-x-4">
-            {["Admin", "Hospital", "Diagnostic Centre"].map((role) => (
-              <label key={role} className="flex items-center space-x-1">
-                <input
-                  type="radio"
-                  name="role"
-                  value={role}
-                  checked={selectedRole === role}
-                  onChange={() => handleRoleChange(role)}
-                />
-                <span>{role}</span>
-              </label>
-            ))}
-          </div>
+          
 
           {/* Email */}
           <div>
