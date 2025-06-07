@@ -377,9 +377,7 @@ const statCards = [
       <PatientInsightsChart data={patientInsightsData} />
       <StatCardsGrid cards={statCards} />
     </div>
-    <div className="min-h-screen bg-white p-6">
-      <BookingsTable data={bookings} />
-    </div>
+    
       </div>
     </div>
   );
