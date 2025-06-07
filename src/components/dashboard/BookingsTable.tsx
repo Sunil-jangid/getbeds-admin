@@ -1,12 +1,12 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useRef, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 export type Booking = {
   name: string;
   bookingId: string;
-  admissionDate: string;
-  dischargeDate: string;
+  admissionDate: string; // Assuming "YYYY-MM-DD" format
+  dischargeDate: string; // Assuming "YYYY-MM-DD" format
   totalDays: string;
   roomPlan: string;
   contact: string;
@@ -23,36 +23,57 @@ const ITEMS_PER_PAGE = 7;
 const BookingsTable: React.FC<BookingsTableProps> = ({ data }) => {
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [startDate, setStartDate] = useState<Date | null>(new Date("2020-06-01"));
-  const [endDate, setEndDate] = useState<Date | null>(new Date("2024-01-01"));
+  const [startDate, setStartDate] = useState<Date | null>(new Date(2020, 5, 1)); // June 2020
+  const [endDate, setEndDate] = useState<Date | null>(new Date(2024, 0, 1)); // January 2024
   const [showStartPicker, setShowStartPicker] = useState(false);
   const [showEndPicker, setShowEndPicker] = useState(false);
 
+  const startPickerRef = useRef<HTMLDivElement>(null);
+  const endPickerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleOutsideClick = (event: MouseEvent) => {
+      if (showStartPicker && startPickerRef.current && !startPickerRef.current.contains(event.target as Node)) {
+        setShowStartPicker(false);
+      }
+      if (showEndPicker && endPickerRef.current && !endPickerRef.current.contains(event.target as Node)) {
+        setShowEndPicker(false);
+      }
+    };
+
+    if (showStartPicker || showEndPicker) {
+      document.addEventListener("mousedown", handleOutsideClick);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  }, [showStartPicker, showEndPicker]);
+
   const filteredData = useMemo(() => {
-  return data.filter((booking) => {
-    const searchMatch =
-      booking.name.toLowerCase().includes(search.toLowerCase()) ||
-      booking.bookingId.toLowerCase().includes(search.toLowerCase()) ||
-      booking.status.toLowerCase().includes(search.toLowerCase());
+    return data.filter((booking) => {
+      const searchMatch =
+        booking.name.toLowerCase().includes(search.toLowerCase()) ||
+        booking.bookingId.toLowerCase().includes(search.toLowerCase()) ||
+        booking.status.toLowerCase().includes(search.toLowerCase());
 
-    const admission = new Date(booking.admissionDate);
-    const discharge = new Date(booking.dischargeDate);
+      const admission = new Date(booking.admissionDate);
+      const discharge = new Date(booking.dischargeDate);
 
-    // Start and end boundaries of the filter range in terms of month/year
-    const start = startDate ? new Date(startDate.getFullYear(), startDate.getMonth(), 1) : null;
-    const end = endDate ? new Date(endDate.getFullYear(), endDate.getMonth() + 1, 0) : null; // end of month
+      const startFilter = startDate
+        ? new Date(startDate.getFullYear(), startDate.getMonth(), 1)
+        : null;
+      const endFilter = endDate
+        ? new Date(endDate.getFullYear(), endDate.getMonth() + 1, 0, 23, 59, 59, 999)
+        : null;
 
-    // Both admission and discharge must be within the selected range
-    const dateMatch =
-      (!start || admission >= start) &&
-      (!end || admission <= end) &&
-      (!start || discharge >= start) &&
-      (!end || discharge <= end);
+      const dateMatch =
+        (!startFilter || discharge >= startFilter) &&
+        (!endFilter || admission <= endFilter);
 
-    return searchMatch && dateMatch;
-  });
-}, [data, search, startDate, endDate]);
-
+      return searchMatch && dateMatch;
+    });
+  }, [data, search, startDate, endDate]);
 
   const paginatedData = filteredData.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
@@ -61,7 +82,8 @@ const BookingsTable: React.FC<BookingsTableProps> = ({ data }) => {
 
   const totalPages = Math.ceil(filteredData.length / ITEMS_PER_PAGE);
   const pageNumbersToShow = 5;
-  const startPage = Math.floor((currentPage - 1) / pageNumbersToShow) * pageNumbersToShow + 1;
+  const startPage =
+    Math.floor((currentPage - 1) / pageNumbersToShow) * pageNumbersToShow + 1;
   const endPage = Math.min(startPage + pageNumbersToShow - 1, totalPages);
 
   return (
@@ -69,12 +91,15 @@ const BookingsTable: React.FC<BookingsTableProps> = ({ data }) => {
       <div className="flex justify-between items-center mb-4 flex-wrap gap-4">
         <div className="flex flex-col">
           <h2 className="font-bold text-xl">All Bookings</h2>
-          <div className="text-sm text-gray-600 flex items-center gap-2">
+          <div className="text-sm text-gray-600 flex items-center gap-2 mt-5">
             Bookings from
-            <div className="relative">
+            <div className="relative" ref={startPickerRef}>
               <button
-                onClick={() => setShowStartPicker(!showStartPicker)}
-                className="text-blue-600 underline"
+                onClick={() => {
+                  setShowStartPicker(!showStartPicker);
+                  setShowEndPicker(false);
+                }}
+                className="bg-black text-white px-3 py-1 rounded-md text-xs font-semibold hover:bg-gray-800 transition-colors"
               >
                 {startDate?.toLocaleString("default", {
                   month: "short",
@@ -82,7 +107,7 @@ const BookingsTable: React.FC<BookingsTableProps> = ({ data }) => {
                 })}
               </button>
               {showStartPicker && (
-                <div className="absolute z-50">
+                <div className="absolute z-50 mt-2 p-2 bg-white border border-gray-300 rounded-lg shadow-lg">
                   <DatePicker
                     selected={startDate}
                     onChange={(date) => {
@@ -98,10 +123,13 @@ const BookingsTable: React.FC<BookingsTableProps> = ({ data }) => {
               )}
             </div>
             -
-            <div className="relative">
+            <div className="relative" ref={endPickerRef}>
               <button
-                onClick={() => setShowEndPicker(!showEndPicker)}
-                className="text-blue-600 underline"
+                onClick={() => {
+                  setShowEndPicker(!showEndPicker);
+                  setShowStartPicker(false);
+                }}
+                className="bg-black text-white px-3 py-1 rounded-md text-xs font-semibold hover:bg-gray-800 transition-colors"
               >
                 {endDate?.toLocaleString("default", {
                   month: "short",
@@ -109,7 +137,7 @@ const BookingsTable: React.FC<BookingsTableProps> = ({ data }) => {
                 })}
               </button>
               {showEndPicker && (
-                <div className="absolute z-50">
+                <div className="absolute z-50 mt-2 p-2 bg-white border border-gray-300 rounded-lg shadow-lg">
                   <DatePicker
                     selected={endDate}
                     onChange={(date) => {
@@ -128,65 +156,77 @@ const BookingsTable: React.FC<BookingsTableProps> = ({ data }) => {
         </div>
 
         <input
-          type="text"
-          placeholder="Search"
-          className="border px-2 py-1 rounded"
-          value={search}
-          onChange={(e) => {
-            setSearch(e.target.value);
-            setCurrentPage(1);
-          }}
-        />
+  type="text"
+  placeholder="Search by name, ID, or status..."
+  className="border px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all w-full md:w-80 lg:w-66"
+  value={search}
+  onChange={(e) => {
+    setSearch(e.target.value);
+    setCurrentPage(1);
+  }}
+/>
       </div>
 
-      <table className="w-full border rounded text-sm">
-        <thead>
-          <tr className="bg-gray-100 text-left">
-            <th className="p-2">Patients Name</th>
-            <th className="p-2">Booking ID</th>
-            <th className="p-2">Admission Date</th>
-            <th className="p-2">Discharge Date</th>
-            <th className="p-2">Total Days</th>
-            <th className="p-2">Room Plan</th>
-            <th className="p-2">Contact</th>
-            <th className="p-2">Price</th>
-            <th className="p-2">Status</th>
-            <th className="p-2">Print Invoice</th>
+      <table className="w-full border rounded-lg overflow-hidden text-sm">
+        <thead className="bg-gray-100">
+          <tr className="text-left text-gray-700">
+            <th className="p-3 font-semibold">Patients Name</th>
+            <th className="p-3 font-semibold">Booking ID</th>
+            <th className="p-3 font-semibold">Admission Date</th>
+            <th className="p-3 font-semibold">Discharge Date</th>
+            <th className="p-3 font-semibold">Total Days</th>
+            <th className="p-3 font-semibold">Room Plan</th>
+            <th className="p-3 font-semibold">Contact</th>
+            <th className="p-3 font-semibold">Price</th>
+            <th className="p-3 font-semibold">Status</th>
+            <th className="p-3 font-semibold">Print Invoice</th>
           </tr>
         </thead>
         <tbody>
-          {paginatedData.map((item, idx) => (
-            <tr key={idx} className="border-t hover:bg-gray-50">
-              <td className="p-2">{item.name}</td>
-              <td className="p-2">{item.bookingId}</td>
-              <td className="p-2">{item.admissionDate}</td>
-              <td className="p-2">{item.dischargeDate}</td>
-              <td className="p-2">{item.totalDays}</td>
-              <td className="p-2">{item.roomPlan}</td>
-              <td className="p-2">{item.contact}</td>
-              <td className="p-2">Rs. {item.price.toLocaleString()}</td>
-              <td className="p-2">
-                <span
-                  className={`px-2 py-1 rounded text-xs font-medium ${
-                    item.status === "Processed"
-                      ? "text-green-600 border border-green-400"
-                      : "text-red-600 border border-red-400"
-                  }`}
-                >
-                  {item.status}
-                </span>
-              </td>
-              <td className="p-2">
-                <button className="text-purple-600 border border-purple-300 px-2 py-1 text-xs rounded">
-                  Print Invoice
-                </button>
+          {paginatedData.length === 0 ? (
+            <tr>
+              <td colSpan={10} className="text-center p-6 text-gray-500">
+                No bookings found for the selected criteria.
               </td>
             </tr>
-          ))}
+          ) : (
+            paginatedData.map((item) => (
+              <tr key={item.bookingId} className="border-t hover:bg-gray-50 transition-colors">
+                <td className="p-3">{item.name}</td>
+                <td className="p-3">{item.bookingId}</td>
+                <td className="p-3">{item.admissionDate}</td>
+                <td className="p-3">{item.dischargeDate}</td>
+                <td className="p-3">{item.totalDays}</td>
+                <td className="p-3">{item.roomPlan}</td>
+                <td className="p-3">{item.contact}</td>
+                <td className="p-3 font-medium">Rs. {item.price.toLocaleString()}</td>
+                <td className="p-3">
+                  <span
+                    className={`
+                      px-3 py-1 text-xs font-medium
+                      rounded-md inline-flex items-center justify-center min-w-[85px] text-center
+                      ${
+                        item.status === "Processed"
+                          ? "text-green-700 bg-green-100 border border-green-300"
+                          : "text-red-700 bg-red-100 border border-red-300"
+                      }
+                    `}
+                  >
+                    {item.status}
+                  </span>
+                </td>
+                <td className="p-3">
+                  <button className="text-purple-700 bg-purple-100 border border-purple-300 px-3 py-1 text-xs rounded-md hover:bg-purple-200 transition-colors">
+                    Print Invoice
+                  </button>
+                </td>
+              </tr>
+            ))
+          )}
         </tbody>
       </table>
 
-      <div className="mt-4 flex justify-between items-center">
+      <div className="mt-6 flex justify-between items-center flex-wrap gap-3">
         <span className="text-sm text-gray-600">
           Showing {paginatedData.length} of {filteredData.length} entries
         </span>
@@ -195,20 +235,24 @@ const BookingsTable: React.FC<BookingsTableProps> = ({ data }) => {
           <button
             onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
             disabled={currentPage === 1}
-            className="px-2 py-1 text-sm border rounded disabled:opacity-50"
+            className="px-3 py-1 text-sm border border-gray-300 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100 transition-colors"
+            aria-label="Previous page"
           >
             «
           </button>
 
-          {[...Array(endPage - startPage + 1)].map((_, idx) => {
+          {Array.from({ length: endPage - startPage + 1 }, (_, idx) => {
             const pageNum = startPage + idx;
             return (
               <button
                 key={pageNum}
                 onClick={() => setCurrentPage(pageNum)}
-                className={`px-3 py-1 text-sm border rounded ${
-                  currentPage === pageNum ? "bg-black text-white" : "bg-white"
-                }`}
+                className={`px-3 py-1 text-sm border border-gray-300 rounded-md ${
+                  currentPage === pageNum
+                    ? "bg-black text-white"
+                    : "bg-white text-gray-700 hover:bg-gray-100"
+                } transition-colors`}
+                aria-label={`Page ${pageNum}`}
               >
                 {pageNum}
               </button>
@@ -218,7 +262,8 @@ const BookingsTable: React.FC<BookingsTableProps> = ({ data }) => {
           <button
             onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
             disabled={currentPage === totalPages}
-            className="px-2 py-1 text-sm border rounded disabled:opacity-50"
+            className="px-3 py-1 text-sm border border-gray-300 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100 transition-colors"
+            aria-label="Next page"
           >
             »
           </button>
