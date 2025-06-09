@@ -17,13 +17,53 @@ import {
   ComposedChart,
   Area,
 } from "recharts";
-import {
-  ComposableMap,
-  Geographies,
-  Geography,
-} from "react-simple-maps";
+
 
 type ViewType1 = "Week" | "Month" | "Year" | "All";
+
+const activityData = [
+  {
+    user: "Bender project",
+    names: ["Johnson", "Johnson", "Johnson"],
+    progress: 53,
+    status: "Inprogress",
+    date: "06 Jan 2024",
+  },
+  {
+    user: "Batman",
+    names: ["William", "William", "William"],
+    progress: 24,
+    status: "Pending",
+    date: "06 Jan 2024",
+  },
+  {
+    user: "Candy",
+    names: ["Paul", "Paul", "Paul"],
+    progress: 86,
+    status: "Completed",
+    date: "30 Jan 2024",
+  },
+  {
+    user: "Throwing",
+    names: ["Ellisebeth", "Ellisebeth", "Ellisebeth"],
+    progress: 51,
+    status: "Inprogress",
+    date: "11 Jan 2024",
+  },
+];
+
+const getStatusStyle = (status: string) => {
+  switch (status) {
+    case "Completed":
+      return "bg-green-100 text-green-700";
+    case "Pending":
+      return "bg-red-100 text-red-600";
+    case "Inprogress":
+      return "bg-black text-white";
+    default:
+      return "";
+  }
+};
 
 const dataMap: Record<ViewType1, any[]> = {
   Week: [
@@ -290,6 +330,80 @@ const ChartSection: React.FC = () => {
   </div>
 </div>
 <br />
+<div className="bg-white rounded-2xl shadow-xl p-6">
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-lg font-semibold">Activity Report</h2>
+        <button className="bg-blue-500 text-white px-4 py-2 rounded-md text-sm font-medium">
+          Export Report
+        </button>
+      </div>
+
+      <div className="overflow-auto">
+        <table className="w-full text-sm text-left">
+          <thead className="bg-gray-100 text-gray-500">
+            <tr>
+              <th className="py-2 px-4">Users</th>
+              <th className="py-2 px-4">Lorem Ipsum</th>
+              <th className="py-2 px-4">Lorem Ipsum</th>
+              <th className="py-2 px-4">Lorem Ipsum</th>
+              <th className="py-2 px-4">Lorem Ipsum</th>
+              <th className="py-2 px-4">Lorem Ipsum</th>
+              <th className="py-2 px-4">Lorem Ipsum</th>
+            </tr>
+          </thead>
+          <tbody>
+            {activityData.map((item, idx) => (
+              <tr key={idx} className="border-b">
+                <td className="py-3 px-4">{item.user}</td>
+                {item.names.map((name, i) => (
+                  <td key={i} className="py-3 px-4">
+                    {name}
+                  </td>
+                ))}
+                <td className="py-3 px-4">
+                  <div className="flex items-center gap-2">
+                    <div className="w-24 h-2 bg-gray-200 rounded">
+                      <div
+                        className={`h-2 rounded ${
+                          item.progress > 70
+                            ? "bg-green-500"
+                            : item.progress < 30
+                            ? "bg-pink-500"
+                            : "bg-blue-400"
+                        }`}
+                        style={{ width: `${item.progress}%` }}
+                      ></div>
+                    </div>
+                    <span
+                      className={`text-sm font-medium ${
+                        item.progress > 70
+                          ? "text-green-600"
+                          : item.progress < 30
+                          ? "text-pink-500"
+                          : "text-blue-400"
+                      }`}
+                    >
+                      {item.progress}%
+                    </span>
+                  </div>
+                </td>
+                <td className="py-3 px-4">
+                  <span
+                    className={`inline-flex items-center justify-center w-24 h-8 text-xs font-semibold rounded-md ${getStatusStyle(
+                      item.status
+                    )}`}
+                  >
+                    {item.status}
+                  </span>
+                </td>
+                <td className="py-3 px-4 text-gray-500">{item.date}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <br />
 </div>
   );
 };
