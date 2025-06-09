@@ -2,20 +2,20 @@
 
 import React, { useState, useMemo } from "react";
 import {
+  PieChart,
+  Pie,
+  Cell,
+  ResponsiveContainer,
   BarChart,
   Bar,
-  Line,
   LineChart,
+  Line,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
-  ResponsiveContainer,
-} from "recharts";
-import {
-  PieChart,
-  Pie,
-  Cell,
+  ComposedChart,
+  Area,
 } from "recharts";
 import {
   ComposableMap,
@@ -23,32 +23,51 @@ import {
   Geography,
 } from "react-simple-maps";
 
-const tabs = ["Week", "Month", "Year", "All"];
+type ViewType1 = "Week" | "Month" | "Year" | "All";
 
-const dataSets = {
+const dataMap: Record<ViewType1, any[]> = {
   Week: [
-    { name: "Jan", users: 50, revenue: 70 },
-    { name: "Feb", users: 100, revenue: 90 },
-    { name: "Mar", users: 70, revenue: 50 },
-    { name: "Apr", users: 30, revenue: 20 },
-    { name: "May", users: 60, revenue: 50 },
-    { name: "Jun", users: 90, revenue: 80 },
-    { name: "Jul", users: 40, revenue: 40 },
-    { name: "Aug", users: 100, revenue: 90 },
-    { name: "Sep", users: 70, revenue: 60 },
-    { name: "Oct", users: 30, revenue: 40 },
-    { name: "Nov", users: 60, revenue: 80 },
-    { name: "Dec", users: 90, revenue: 90 },
+    { name: "Mon", bar: 80, line: 80 },
+    { name: "Tue", bar: 50, line: 50 },
+    { name: "Wed", bar: 70, line: 70 },
+    { name: "Thu", bar: 60, line: 60 },
+    { name: "Fri", bar: 90, line: 90 },
+    { name: "Sat", bar: 40, line: 40 },
+    { name: "Sun", bar: 30, line: 30 },
   ],
-  Month: [],
-  Year: [],
-  All: [],
+  Month: [
+    { name: "Jan", bar: 100, line: 100 },
+    { name: "Feb", bar: 95, line: 95 },
+    { name: "Mar", bar: 50, line: 50 },
+    { name: "Apr", bar: 30, line: 30 },
+    { name: "May", bar: 60, line: 60 },
+    { name: "Jun", bar: 80, line: 80 },
+    { name: "Jul", bar: 40, line: 40 },
+    { name: "Aug", bar: 90, line: 90 },
+    { name: "Sep", bar: 60, line: 60 },
+    { name: "Oct", bar: 40, line: 40 },
+    { name: "Nov", bar: 70, line: 70 },
+    { name: "Dec", bar: 80, line: 80 },
+  ],
+  Year: [
+    { name: "2020", bar: 50, line: 50 },
+    { name: "2021", bar: 70, line: 70 },
+    { name: "2022", bar: 70, line: 70 },
+    { name: "2023", bar: 90, line: 90 },
+    { name: "2024", bar: 75, line: 75 },
+  ],
+  All: [
+    { name: "Phase 1", bar: 60, line: 60 },
+    { name: "Phase 2", bar: 90, line: 90 },
+    { name: "Phase 3", bar: 50, line: 50 },
+    { name: "Phase 4", bar: 100, line: 100 },
+  ],
 };
 
 const geoUrl =
   "https://raw.githubusercontent.com/deldersveld/topojson/master/countries/india/india-states.json";
 
-const categoryColors = {
+const categoryColors: Record<string, string> = {
   Mass: "#8ED1FC",
   Large: "#FFB347",
   Medium: "#FCD34D",
@@ -65,6 +84,8 @@ const stateData = [
 
 const totalCustomers = 19.8;
 
+type ViewType = "Monthly" | "Daily" | "Yearly";
+
 const donutData = [
   { name: "Lorem Ipsum", value: 50, color: "#000000" },
   { name: "Lorem Ipsum", value: 80, color: "#FFD700" },
@@ -72,12 +93,9 @@ const donutData = [
   { name: "Lorem Ipsum", value: 40, color: "#8ED1FC" },
 ];
 
-const ProjectOverviewDashboard = () => {
-  const [activeTab, setActiveTab] = useState("Week");
-  const data = useMemo(() => dataSets[activeTab], [activeTab]);
-
-  const [view, setView] = useState("Monthly");
-  const [hoverIndex, setHoverIndex] = useState(null);
+const ChartSection: React.FC = () => {
+  const [view, setView] = useState<ViewType>("Monthly");
+  const [hoverIndex, setHoverIndex] = useState<number | null>(null);
 
   const labels = useMemo(() => {
     switch (view) {
@@ -95,213 +113,185 @@ const ProjectOverviewDashboard = () => {
     }
   }, [view]);
 
-  const chartData = useMemo(() => {
+  const data = useMemo(() => {
     return labels.map(() => Math.floor(Math.random() * 200) + 10);
   }, [labels]);
 
   const donutTotal = donutData.reduce((acc, cur) => acc + cur.value, 0);
-
+  const [view1, setView1] = useState<ViewType1>("Week");
+  const data1 = dataMap[view1];
   return (
-    <div className="p-6 space-y-6">
-      <div className="bg-white p-6 rounded-xl shadow">
+    <div className="min-h-screen justify-center px-10">
+    <div className="flex gap-4 w-full py-6 h-[400px]">
+      {/* Bar Chart Section */}
+      <div className="bg-white rounded-2xl shadow p-6 w-2/7 h-full flex flex-col">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold">Project Overview</h2>
-          <div className="flex gap-2">
-            {tabs.map((tab) => (
-              <button
-                key={tab}
-                className={`px-4 py-1 rounded-full border text-sm font-medium transition ${
-                  activeTab === tab
-                    ? "bg-black text-white"
-                    : "bg-gray-200 text-black"
-                }`}
-                onClick={() => setActiveTab(tab)}
-              >
-                {tab}
-              </button>
-            ))}
-          </div>
+          <h2 className="text-lg font-semibold">Lorem Ipsum</h2>
+          <select
+            value={view}
+            onChange={(e) => setView(e.target.value as ViewType)}
+            className="border rounded-full px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 cursor-pointer"
+          >
+            <option value="Monthly">Monthly</option>
+            <option value="Daily">Daily</option>
+            <option value="Yearly">Yearly</option>
+          </select>
         </div>
-
-        <ResponsiveContainer width="100%" height={250}>
-          <BarChart data={data}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
-            <YAxis />
-            <Tooltip />
-            <Bar dataKey="users" fill="#000" barSize={20} />
-            <Line type="monotone" dataKey="revenue" stroke="#8ED1FC" strokeWidth={3} />
-          </BarChart>
-        </ResponsiveContainer>
-
-        <div className="grid grid-cols-4 text-center mt-6">
-          <div>
-            <h3 className="text-xl font-bold">12,721</h3>
-            <p className="text-sm text-gray-500">No. of Users</p>
-          </div>
-          <div>
-            <h3 className="text-xl font-bold">721</h3>
-            <p className="text-sm text-gray-500">No. Hospitals</p>
-          </div>
-          <div>
-            <h3 className="text-xl font-bold">Rs. 12.9 M</h3>
-            <p className="text-sm text-gray-500">Revenue</p>
-          </div>
-          <div>
-            <h3 className="text-xl font-bold">128</h3>
-            <p className="text-sm text-gray-500">Ambulance Partners</p>
-          </div>
+        <div className="flex items-end justify-center gap-2 overflow-x-auto scrollbar-hide flex-grow">
+          {labels.map((label, i) => (
+            <div
+              key={label}
+              className="flex flex-col items-center group"
+              onMouseEnter={() => setHoverIndex(i)}
+              onMouseLeave={() => setHoverIndex(null)}
+            >
+              <div
+                className={`w-4 rounded-t-lg transition-all duration-300 ${
+                  hoverIndex === i ? "bg-blue-400" : "bg-black"
+                }`}
+                style={{ height: `${data[i]}px` }}
+              ></div>
+              <span className="text-xs mt-2">{label}</span>
+            </div>
+          ))}
         </div>
       </div>
 
-      <div className="flex gap-4 w-full px-4 py-6 h-[400px]">
-        {/* Bar Chart Section */}
-        <div className="bg-white rounded-2xl shadow p-6 w-1/3 h-full flex flex-col">
+      {/* Donut Chart Section */}
+      <div className="bg-white rounded-2xl shadow p-6 w-1/3 h-full flex">
+        <div className="relative w-1/2">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-lg font-semibold">Lorem Ipsum</h2>
-            <select
-              value={view}
-              onChange={(e) => setView(e.target.value)}
-              className="border rounded-full px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 cursor-pointer"
-            >
-              <option value="Monthly">Monthly</option>
-              <option value="Daily">Daily</option>
-              <option value="Yearly">Yearly</option>
-            </select>
           </div>
-          <div className="flex items-end justify-center gap-2 overflow-x-auto scrollbar-hide flex-grow">
-            {labels.map((label, i) => (
-              <div
-                key={label}
-                className="flex flex-col items-center group"
-                onMouseEnter={() => setHoverIndex(i)}
-                onMouseLeave={() => setHoverIndex(null)}
+          <ResponsiveContainer width="100%" height={200}>
+            <PieChart>
+              <Pie
+                data={donutData}
+                innerRadius={60}
+                outerRadius={80}
+                paddingAngle={3}
+                dataKey="value"
               >
-                <div
-                  className={`w-4 rounded-t-lg transition-all duration-300 ${
-                    hoverIndex === i ? "bg-blue-400" : "bg-black"
-                  }`}
-                  style={{ height: `${chartData[i]}px` }}
-                ></div>
-                <span className="text-xs mt-2">{label}</span>
-              </div>
-            ))}
+                {donutData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.color} />
+                ))}
+              </Pie>
+            </PieChart>
+          </ResponsiveContainer>
+          <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
+            <p className="text-2xl font-bold">{donutTotal}K</p>
           </div>
         </div>
-
-        {/* Donut Chart Section */}
-        <div className="bg-white rounded-2xl shadow p-6 w-1/3 h-full flex">
-          <div className="relative w-1/2">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-semibold">Lorem Ipsum</h2>
+        <div className="w-1/2 space-y-3 pl-4 flex flex-col justify-center">
+          {donutData.map((entry, index) => (
+            <div key={index} className="flex items-center space-x-2">
+              <span
+                className="w-4 h-4 rounded-full inline-block"
+                style={{ backgroundColor: entry.color }}
+              ></span>
+              <span className="text-sm font-medium">{entry.name}</span>
             </div>
-            <ResponsiveContainer width="100%" height={200}>
-              <PieChart>
-                <Pie
-                  data={donutData}
-                  innerRadius={60}
-                  outerRadius={80}
-                  paddingAngle={3}
-                  dataKey="value"
-                >
-                  {donutData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-              </PieChart>
-            </ResponsiveContainer>
-            <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
-              <p className="text-2xl font-bold">{donutTotal}K</p>
-            </div>
-          </div>
-          <div className="w-1/2 space-y-3 pl-4 flex flex-col justify-center">
-            {donutData.map((entry, index) => (
-              <div key={index} className="flex items-center space-x-2">
-                <span
-                  className="w-4 h-4 rounded-full inline-block"
-                  style={{ backgroundColor: entry.color }}
-                ></span>
-                <span className="text-sm font-medium">{entry.name}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Map Section */}
-        <div className="bg-white rounded-2xl shadow p-6 w-1/3 h-full flex flex-col">
-          <div className="mb-4">
-            <h2 className="text-lg font-semibold">Top Sales Locations</h2>
-            <h1 className="text-3xl font-bold">{totalCustomers} M</h1>
-            <p className="text-sm text-gray-500 mb-4">
-              Our most customers in India
-            </p>
-            <div className="space-y-2">
-              {Object.entries({
-                Delhi: 15434,
-                Mumbai: 4429,
-                Rajasthan: 2434,
-                Bangalore: 4898,
-              }).map(([label, value]) => (
-                <div key={label} className="flex justify-between items-center">
-                  <div className="flex items-center gap-2">
-                    <span
-                      className="w-4 h-4 rounded-full"
-                      style={{ backgroundColor: categoryColors[label] || "#E5E7EB" }}
-                    />
-                    <span className="text-sm">{label}</span>
-                  </div>
-                  <span className="font-semibold text-sm">{value}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="flex-grow relative">
-            <ComposableMap
-              projection="geoMercator"
-              projectionConfig={{ scale: 1000, center: [80, 22] }}
-              width={400}
-              height={300}
-            >
-              <Geographies geography={geoUrl}>
-                {({ geographies }) =>
-                  geographies.map((geo) => {
-                    const state = stateData.find(
-                      (s) => s.id === geo.properties.st_nm
-                    );
-                    const fillColor = state
-                      ? categoryColors[state.category]
-                      : "#E5E7EB";
-
-                    return (
-                      <Geography
-                        key={geo.rsmKey}
-                        geography={geo}
-                        fill={fillColor}
-                        stroke="#fff"
-                        style={{
-                          default: { outline: "none" },
-                          hover: { fill: "#60A5FA", outline: "none" },
-                          pressed: { outline: "none" },
-                        }}
-                      />
-                    );
-                  })
-                }
-              </Geographies>
-            </ComposableMap>
-            <div className="absolute bottom-4 right-4 flex flex-col space-y-2">
-              <button className="bg-white rounded-full shadow w-7 h-7 flex items-center justify-center text-lg font-bold">
-                +
-              </button>
-              <button className="bg-white rounded-full shadow w-7 h-7 flex items-center justify-center text-lg font-bold">
-                –
-              </button>
-            </div>
-          </div>
+          ))}
         </div>
       </div>
+
+      {/* Map Section */}
+      <div className="bg-white rounded-2xl shadow p-6 w-1/3 h-full flex flex-col">
+        <div className="mb-4">
+          <h2 className="text-lg font-semibold">Top Sales Locations</h2>
+          <h1 className="text-3xl font-bold">{totalCustomers} M</h1>
+          <p className="text-sm text-gray-500 mb-4">
+            Our most customers in India
+          </p>
+          <div className="space-y-2">
+            {Object.entries({
+              Delhi: 15434,
+              Mumbai: 4429,
+              Rajasthan: 2434,
+              Bangalore: 4898,
+            }).map(([label, value]) => (
+              <div key={label} className="flex justify-between items-center">
+                <div className="flex items-center gap-2">
+                  <span
+                    className="w-4 h-4 rounded-full"
+                    style={{ backgroundColor: categoryColors[label] }}
+                  />
+                  <span className="text-sm">{label}</span>
+                </div>
+                <span className="font-semibold text-sm">{value}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+        
+      </div>
+      
     </div>
+    <div className="bg-white rounded-2xl shadow-xl p-6 ">
+  <h2 className="text-lg font-semibold mb-4">Project Overview</h2>
+
+  <div className="flex justify-end gap-2 mb-4">
+    {(["Week", "Month", "Year", "All"] as ViewType1[]).map((v) => (
+      <button
+        key={v}
+        onClick={() => setView1(v)}
+        className={`px-4 py-1 rounded-full text-sm font-medium ${
+          view1 === v
+            ? "bg-sky-400 text-white"
+            : "bg-black text-white hover:bg-gray-800"
+        }`}
+      >
+        {v}
+      </button>
+    ))}
+  </div>
+
+  <ResponsiveContainer width="100%" height={300}>
+    <ComposedChart data={data1}>
+      <defs>
+        <linearGradient id="lineGradient" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#60A5FA" stopOpacity={0.6} />
+          <stop offset="100%" stopColor="#60A5FA" stopOpacity={0.1} />
+        </linearGradient>
+      </defs>
+      <CartesianGrid strokeDasharray="3 3" />
+      <XAxis dataKey="name" />
+      <YAxis />
+      <Tooltip />
+      <Bar dataKey="bar" barSize={20} fill="#000000" radius={[5, 5, 0, 0]} />
+      <Area
+        type="monotone"
+        dataKey="line"
+        stroke="#60A5FA"
+        fill="url(#lineGradient)"
+        strokeWidth={3}
+        dot={{ r: 5, stroke: "#60A5FA", strokeWidth: 2, fill: "white" }}
+      />
+    </ComposedChart>
+  </ResponsiveContainer>
+
+  <div className="grid grid-cols-4 text-center mt-6 border-t pt-4 text-sm text-gray-600">
+    <div>
+      <p className="text-xl font-bold text-black">12,721</p>
+      <p>No. of Users</p>
+    </div>
+    <div>
+      <p className="text-xl font-bold text-black">721</p>
+      <p>No. Hospitals</p>
+    </div>
+    <div>
+      <p className="text-xl font-bold text-black">Rs. 12.9 M</p>
+      <p>Revenue</p>
+    </div>
+    <div>
+      <p className="text-xl font-bold text-black">128</p>
+      <p>Ambulance Partners</p>
+    </div>
+  </div>
+</div>
+<br />
+</div>
   );
 };
 
-export default ProjectOverviewDashboard;
+export default ChartSection;
