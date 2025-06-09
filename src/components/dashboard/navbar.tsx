@@ -32,13 +32,14 @@ export function DashboardNavbar() {
   const navRef = useRef<HTMLDivElement>(null);
 
   const menuItems = [
-    'Profile',
-    'User Management',
-    'Customer Support',
-    'Subscription Plan',
-    'Settings',
-    'Log out',
-  ];
+  { name: 'Profile', href: '/dashboard/profile' },
+  { name: 'User Management', href: '/dashboard/usermanagement' },
+  { name: 'Customer Support', href: '#' },
+  { name: 'Subscription Plan', href: '#' },
+  { name: 'Settings', href: '#' },
+  { name: 'Log out', href: '#' },
+];
+
 
   // Handle outside clicks for both dropdowns
   useEffect(() => {
@@ -150,36 +151,39 @@ export function DashboardNavbar() {
 
             {/* Profile Dropdown */}
             <div className="relative" ref={profileRef}>
-              <div
-                onClick={() => setIsProfileOpen(!isProfileOpen)}
-                className="bg-white px-3 py-2 rounded-full shadow-sm border border-[#F8F9FA] flex items-center gap-3 cursor-pointer"
-              >
-                <div className="flex flex-col text-right">
-                  <span className="text-sm font-medium text-black">John Doe</span>
-                  <span className="text-xs text-muted-foreground text-gray-500">Admin</span>
-                </div>
-                <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
-                  <User className="h-5 w-5 text-gray-600" />
-                </div>
-              </div>
+  <div
+    onClick={() => setIsProfileOpen(!isProfileOpen)}
+    className="bg-white px-3 py-2 rounded-full shadow-sm border border-[#F8F9FA] flex items-center gap-3 cursor-pointer"
+  >
+    <div className="flex flex-col text-right">
+      <span className="text-sm font-medium text-black">John Doe</span>
+      <span className="text-xs text-muted-foreground text-gray-500">Admin</span>
+    </div>
+    <img
+      src="/pro.png"
+      alt="Profile"
+      className="w-8 h-8 rounded-full object-cover"
+    />
+  </div>
 
-              {isProfileOpen && (
-                <div className="absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-2xl shadow-lg overflow-hidden z-50">
-                  {menuItems.map((item, index) => (
-                    <Link
-                      key={item}
-                      href="/"
-                      onClick={() => setIsProfileOpen(false)}
-                      className={`block px-4 py-2 text-sm transition-all duration-300 hover:bg-black hover:text-white ${
-                        index === 0 ? 'font-medium rounded-t-2xl' : ''
-                      } ${index === menuItems.length - 1 ? 'rounded-b-2xl' : ''}`}
-                    >
-                      {item}
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </div>
+  {isProfileOpen && (
+    <div className="absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-2xl shadow-lg overflow-hidden z-50">
+      {menuItems.map((item, index) => (
+        <Link
+          key={item.name}
+          href={item.href}
+          onClick={() => setIsProfileOpen(false)}
+          className={`block px-4 py-2 text-sm transition-all duration-300 hover:bg-black hover:text-white ${
+            index === 0 ? 'font-medium rounded-t-2xl' : ''
+          } ${index === menuItems.length - 1 ? 'rounded-b-2xl' : ''}`}
+        >
+          {item.name}
+        </Link>
+      ))}
+    </div>
+  )}
+</div>
+
           </div>
         </div>
       </div>
