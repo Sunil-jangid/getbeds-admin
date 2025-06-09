@@ -60,7 +60,7 @@ export default function AdminProfile() {
     sectionKey: string;
     children: React.ReactNode;
   }) => (
-    <div className="bg-white p-4 rounded shadow relative space-y-4">
+    <div className="bg-white p-4 rounded relative space-y-4">
       <div className="flex justify-between items-center mb-2">
         <h2 className="text-lg font-semibold">{title}</h2>
         {editSection !== sectionKey && (
@@ -201,7 +201,7 @@ export default function AdminProfile() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex">
+    <div className="min-h-screen bg-white flex">
       {/* Sidebar */}
       <div className="w-64 bg-white shadow p-6">
         <div className="text-center mb-6">
