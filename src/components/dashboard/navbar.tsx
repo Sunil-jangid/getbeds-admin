@@ -150,10 +150,10 @@ export function DashboardNavbar() {
             </Link>
 
             {/* Profile Dropdown */}
-            <div className="relative" ref={profileRef}>
+            <div className="relative " ref={profileRef}>
   <div
     onClick={() => setIsProfileOpen(!isProfileOpen)}
-    className="bg-white px-3 py-2 rounded-full shadow-sm border border-[#F8F9FA] flex items-center gap-3 cursor-pointer"
+    className="bg-white px-3 py-2 rounded-full shadow-sm border border-[#F8F9FA] flex items-center gap-3 cursor-pointer hover:shadow-md transition"
   >
     <div className="flex flex-col text-right">
       <span className="text-sm font-medium text-black">John Doe</span>
