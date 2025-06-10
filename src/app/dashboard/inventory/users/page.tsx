@@ -101,9 +101,51 @@ export default function UsersPage() {
           Add User Details
         </button>
       </div>
-
+      <h2 className="text-xl font-bold text-black mb-2 ml-1">User Details</h2>
       {/* Table */}
-      
+      <div className="overflow-x-auto">
+        <table className="min-w-full text-sm border">
+          <thead>
+            <tr className="bg-gray-100 text-left">
+              {[
+                "UID",
+                "Name",
+                "Location",
+                "Service ID",
+                "Payment Amount",
+                "Service Type",
+                "Hospital Visited",
+                "Action",
+              ].map(header => (
+                <th key={header} className="p-6 border-b font-medium">
+                  {header}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {paginatedData.map(user => (
+              <tr key={user.uid} className="border-b hover:bg-gray-50">
+                <td className="p-6">{user.uid}</td>
+                <td className="p-6">{user.name}</td>
+                <td className="p-6">{user.location}</td>
+                <td className="p-6">{user.serviceId}</td>
+                <td className="p-6">{user.paymentAmount}</td>
+                <td className="p-6">{user.serviceType}</td>
+                <td className="p-6">{user.hospitalVisited}</td>
+                <td className="p-6 flex items-center space-x-2">
+                  <button onClick={() => handleEdit(user)}>
+                    <Pencil className="w-4 h-4 text-blue-600" />
+                  </button>
+                  <button onClick={() => handleDelete(user.uid)}>
+                    <Trash2 className="w-4 h-4 text-red-600" />
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
       {/* Pagination */}
       <div className="flex justify-between items-center mt-4 text-sm">
