@@ -94,7 +94,37 @@ export default function TicketDashboard() {
       </div>
 
       {/* Right Side Chat */}
-      
+      <div className="w-1/3 p-4 rounded-lg shadow-md border flex flex-col justify-between">
+        <div>
+          <div className="bg-gray-900 text-white p-4 rounded-t-lg">
+            <p className="font-semibold">John Doe</p>
+            <p className="text-sm">#123456</p>
+          </div>
+
+          <div className="p-4 space-y-4">
+            <div>
+              
+              
+            </div>
+
+            {chatMessages.map((msg, i) => (
+              <div key={i} className="bg-black text-white p-2 rounded max-w-xs ml-auto text-sm">
+                {msg}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="p-2 border-t flex items-center gap-2">
+          <input
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Type here"
+            className="flex-1 p-2 border rounded"
+          />
+          <button onClick={handleSend} className="bg-black text-white px-4 py-2 rounded">Send</button>
+        </div>
+      </div>
     </div>
   );
 }
