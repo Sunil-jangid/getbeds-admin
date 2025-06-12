@@ -15,6 +15,15 @@ const dateData1 = [
   { date: "Jan 12", change: "+20%", value: 20 },
   { date: "Jan 13", change: "-12%", value: -12 },
 ];
+const subscriptionData4 = [
+  { label: "Active", value: 10087, color: "#22C55E" }, // green
+  { label: "Renewal", value: 9009, color: "#FACC15" },  // yellow
+  { label: "Cancel", value: 4000, color: "#EF4444" },    // red
+];
+
+// Helper to get circle dash offset
+const getStrokeDashoffset = (value: number, total: number) =>
+  2 * Math.PI * 50 * (1 - value / total);
 
 type SubscriptionItem = {
   day: number;
@@ -252,7 +261,8 @@ const Dashboard = () => {
   const data = allData[selectedRange];
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [selectedDate, setSelectedDate] = useState("Jan 10");
-
+  const total = subscriptionData4.reduce((acc, item) => acc + item.value, 0);
+  let offset = 0;
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
         <div className="mb-5 flex items-center bg-gray-100 rounded-full px-4 py-2 w-full max-w-md shadow-md">
@@ -508,6 +518,62 @@ const Dashboard = () => {
     View full list
   </button>
 </div>
+<div className="bg-white p-4 rounded-xl shadow-md w-[367px] h-[436px] flex flex-col items-center justify-between mt-5">
+      <div className="w-full flex justify-between items-center">
+        <h2 className="text-sm font-semibold">Subscription Plans</h2>
+      </div>
+
+      <div className="relative w-48 h-48">
+        <svg width="100%" height="100%" viewBox="0 0 120 120">
+          <circle
+            cx="60"
+            cy="60"
+            r="50"
+            fill="none"
+            stroke="#F3F4F6"
+            strokeWidth="10"
+          />
+          {subscriptionData4.map((item, index) => {
+            const valueOffset = getStrokeDashoffset(item.value, total);
+            const circle = (
+              <circle
+                key={item.label}
+                cx="60"
+                cy="60"
+                r="50"
+                fill="none"
+                stroke={item.color}
+                strokeWidth="10"
+                strokeDasharray={2 * Math.PI * 50}
+                strokeDashoffset={offset}
+                strokeLinecap="round"
+                transform="rotate(-90 60 60)"
+              />
+            );
+            offset += (item.value / total) * 2 * Math.PI * 50;
+            return circle;
+          })}
+        </svg>
+        <div className="absolute inset-0 flex items-center justify-center text-sm font-semibold">
+          GetBeds+
+        </div>
+      </div>
+
+      <div className="space-y-1 mt-4 w-full">
+        {subscriptionData4.map((item) => (
+          <div key={item.label} className="flex items-center gap-2 text-sm">
+            <span
+              className="w-2.5 h-2.5 rounded-full"
+              style={{ backgroundColor: item.color }}
+            ></span>
+            <span className="flex-1">{item.label}</span>
+            <span className="font-medium">
+              {item.value.toLocaleString()}+
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
 
     </div>
 </div>
