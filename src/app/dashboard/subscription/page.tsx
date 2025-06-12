@@ -2,9 +2,102 @@
 import React, { useState } from 'react';
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
-  PieChart, Pie, Cell, Legend,
+  PieChart, Pie, Cell, Legend, LineChart, Line, CartesianGrid, 
 } from 'recharts';
 import { Search, ScanLine } from 'lucide-react';
+import Image from 'next/image';
+
+
+const dateData1 = [
+  { date: "Jan 9", change: "+8%", value: 8 },
+  { date: "Jan 10", change: "+10%", value: 10 },
+  { date: "Jan 11", change: "+2%", value: 2 },
+  { date: "Jan 12", change: "+20%", value: 20 },
+  { date: "Jan 13", change: "-12%", value: -12 },
+];
+
+type SubscriptionItem = {
+  day: number;
+  title: string;
+  desc: string;
+  users: number;
+};
+
+const subscriptionData1: Record<string, SubscriptionItem[]> = {
+  "Jan 10": [
+    {
+      day: 2,
+      title: "Subscription renewal alert",
+      desc: "3 of 4 payments, Recharge",
+      users: 123,
+    },
+    {
+      day: 8,
+      title: "Payment Due",
+      desc: "3 of 4 payments, Electricity",
+      users: 100,
+    },
+    {
+      day: 11,
+      title: "Subscription upgrade",
+      desc: "1 of 2 upgrades, Phone",
+      users: 132,
+    },
+    {
+      day: 23,
+      title: "Bill payment alert",
+      desc: "2 of 4 payments, Tuition fees",
+      users: 140,
+    },
+    {
+      day: 27,
+      title: "Subscription Due",
+      desc: "1 of 4 payments, Water Bill",
+      users: 1500,
+    },
+  ],
+  "Jan 12": [
+    {
+      day: 5,
+      title: "Subscription Paused",
+      desc: "1 of 3, Streaming Service",
+      users: 89,
+    },
+    {
+      day: 13,
+      title: "Payment Reminder",
+      desc: "2 of 4 payments, Broadband",
+      users: 60,
+    },
+  ],
+};
+
+const dataMap = {
+  Weekly: [
+    { name: '1st week', users: 20, revenue: 22 },
+    { name: '2nd week', users: 40, revenue: 65 },
+    { name: '3rd week', users: 48, revenue: 70 },
+    { name: '4th week', users: 52, revenue: 50 },
+    { name: '5th week', users: 60, revenue: 75 },
+    { name: '6th week', users: 78, revenue: 98 },
+  ],
+  Monthly: [
+    { name: 'Jan', users: 200, revenue: 250 },
+    { name: 'Feb', users: 180, revenue: 220 },
+    { name: 'Mar', users: 240, revenue: 300 },
+    { name: 'Apr', users: 260, revenue: 310 },
+    { name: 'May', users: 300, revenue: 380 },
+    { name: 'Jun', users: 320, revenue: 400 },
+  ],
+  Yearly: [
+    { name: '2019', users: 1000, revenue: 1200 },
+    { name: '2020', users: 1400, revenue: 1800 },
+    { name: '2021', users: 1600, revenue: 2000 },
+    { name: '2022', users: 1800, revenue: 2200 },
+    { name: '2023', users: 2100, revenue: 2800 },
+    { name: '2024', users: 2500, revenue: 3200 },
+  ],
+};
 
 const timeFrames = ['Weekly', 'Monthly', 'Yearly'] as const;
 type TimeFrame = typeof timeFrames[number];
@@ -25,6 +118,52 @@ const allData = {
     { name: "Area", value: 10 },
   ],
 };
+
+const subscriptionStats = [
+  { month: 'Jan', annual: 10, total: 20 },
+  { month: 'Feb', annual: 1, total: 20 },
+  { month: 'Mar', annual: 20, total: 20 },
+  { month: 'Apr', annual: 10, total: 20 },
+  { month: 'May', annual: 10, total: 20 },
+  { month: 'Jun', annual: 5, total: 20 },
+  { month: 'Jul', annual: 10, total: 20 },
+  { month: 'Aug', annual: 7, total: 20 },
+  { month: 'Sep', annual: 5, total: 20 },
+  { month: 'Oct', annual: 15, total: 20 },
+  { month: 'Nov', annual: 6, total: 20 },
+  { month: 'Dec', annual: 3, total: 20 },
+];
+
+const subscriptionData = [
+  {
+    name: 'John Adams',
+    avatar: '/pro.png', // replace with actual path
+    type: 'Monthly Subscription',
+    due: 'Due today!',
+    subscribedOn: '19th Oct, 2024',
+  },
+  {
+    name: 'John Adams',
+    avatar: '/pro.png',
+    type: 'Monthly Subscription',
+    due: 'Due today!',
+    subscribedOn: '12th Nov, 2024',
+  },
+  {
+    name: 'John Adams',
+    avatar: '/pro.png',
+    type: 'Annual Payment',
+    due: 'Due tomorrow',
+    subscribedOn: '12th Dec, 2024',
+  },
+  {
+    name: 'John Adams',
+    avatar: '/pro.png',
+    type: 'Set payment reminder',
+    due: 'Due today',
+    subscribedOn: '15th Oct, 2024',
+  },
+];
 
 const COLORS = ["#6B5BFF", "#FACC15", "#F43F5E"]; // Purple, Yellow, Red
 
@@ -53,7 +192,8 @@ const Dashboard = () => {
   const [timeframePremium, setTimeframePremium] = useState<TimeFrame>('Monthly');
   const [timeframeAdvanced, setTimeframeAdvanced] = useState<TimeFrame>('Monthly');
   const [timeframePie, setTimeframePie] = useState<TimeFrame>('Monthly');
-
+  const [timeframe, setTimeframe] = useState<'Weekly' | 'Monthly' | 'Yearly'>('Weekly');
+  const chartData = dataMap[timeframe];
   const [dataBasic, setDataBasic] = useState(generateData(getLabels('Monthly')));
   const [dataPremium, setDataPremium] = useState(generateData(getLabels('Monthly')));
   const [dataAdvanced, setDataAdvanced] = useState(generateData(getLabels('Monthly')));
@@ -110,6 +250,9 @@ const Dashboard = () => {
   );
   const [selectedRange, setSelectedRange] = useState<"Daily" | "Monthly" | "Yearly">("Monthly");
   const data = allData[selectedRange];
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [selectedDate, setSelectedDate] = useState("Jan 10");
+
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
         <div className="mb-5 flex items-center bg-gray-100 rounded-full px-4 py-2 w-full max-w-md shadow-md">
@@ -175,6 +318,201 @@ const Dashboard = () => {
 </div>
 
       </div>
+
+      <div className="bg-white rounded-lg shadow-md">
+      <div className="flex max-w-7xl mx-auto mt-7 gap-6">
+  {/* 2/3 Width Section - Main Content */}
+  <div className="w-2/3 p-6 ">
+    <div className="flex justify-between items-center mb-4">
+      <div>
+        <h2 className="text-2xl font-bold text-black">Get started with SubsManage</h2>
+        <p className="text-sm text-gray-400">View, progress and manage subscription efficiently</p>
+      </div>
+      <button className="bg-yellow-500 hover:bg-yellow-600 text-white px-5 py-2 rounded-full font-semibold">
+        +Add Subscription
+      </button>
+    </div>
+
+    <h3 className="text-lg font-semibold text-black mb-3">User Subscriptions List</h3>
+
+    <div className="bg-gray-100 p-5 rounded-lg space-y-4">
+      {subscriptionData.map((item, index) => (
+        <div key={index} className="flex justify-between items-center bg-gray-100 p-1 rounded-md">
+          <div className="flex items-center space-x-3">
+            <Image
+              src={item.avatar}
+              alt={item.name}
+              width={40}
+              height={40}
+              className="rounded-full object-cover"
+            />
+            <p className="font-medium text-black">{item.name}</p>
+          </div>
+          <p className="text-sm text-black">{item.type}</p>
+          <p className="text-sm text-black">{item.due}</p>
+          <p className="text-sm text-gray-500">Subscribed on {item.subscribedOn}</p>
+        </div>
+      ))}
+
+      <div className="text-center">
+        <button className="bg-black text-white px-6 py-2 rounded-full text-sm font-medium">
+          View all subscriptions
+        </button>
+      </div>
+    </div>
+
+    <h3 className="text-lg font-semibold text-black mb-3 mt-4">Total subscriptions</h3>
+    <div className="bg-gray-100 p-5 rounded-lg">
+      <p className="text-sm font-medium text-black mb-10">Annual Subscriptions</p>
+
+      <div className="flex">
+        {/* Y-axis Labels */}
+        <div className="flex flex-col justify-between h-40 mr-2 text-xs text-black">
+          {[20, 15, 10, 5, 0].map((val) => (
+            <div key={val} className="h-8">{val}S</div>
+          ))}
+        </div>
+
+        {/* Bar Chart */}
+        <div className="flex justify-between items-end h-40 w-full">
+          {subscriptionStats.map((item, index) => {
+            const blackHeight = (item.annual / item.total) * 100;
+            const blueHeight = 100 - blackHeight;
+
+            return (
+              <div
+                key={index}
+                className="relative flex flex-col items-center w-6"
+                onMouseEnter={() => setHoveredIndex(index)}
+                onMouseLeave={() => setHoveredIndex(null)}
+              >
+                <div className="relative w-full h-40 bg-transparent flex flex-col justify-end">
+                  <div className="bg-blue-300 transition-all duration-200" style={{ height: `${blueHeight}%` }} />
+                  <div className="bg-black transition-all duration-200" style={{ height: `${blackHeight}%` }} />
+                </div>
+                {hoveredIndex === index && (
+                  <div className="absolute -top-16 w-max bg-black text-white text-xs px-2 py-1 rounded shadow-md z-10">
+                    <p>{item.month}</p>
+                    <p>Total: {item.total}</p>
+                    <p>Annual: {item.annual}</p>
+                  </div>
+                )}
+                <span className="text-xs text-black mt-2">{item.month}</span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+
+    <div className="bg-white p-6 rounded-lg mt-6">
+      <div className="flex justify-between items-center mb-4">
+        <h3 className="text-lg font-semibold text-black">Users v/s Revenue</h3>
+
+        <div className="flex items-center space-x-6">
+          <div className="flex items-center space-x-2">
+            <span className="w-2.5 h-2.5 bg-blue-300 rounded-full" />
+            <span className="text-sm text-gray-600">No. of users</span>
+          </div>
+          <div className="flex items-center space-x-2">
+            <span className="w-2.5 h-2.5 bg-black rounded-full" />
+            <span className="text-sm text-gray-800">Revenue</span>
+          </div>
+
+          <select
+            value={timeframe}
+            onChange={(e) => setTimeframe(e.target.value as any)}
+            className="ml-4 border border-gray-300 rounded px-2 py-1 text-sm text-gray-700"
+          >
+            <option>Weekly</option>
+            <option>Monthly</option>
+            <option>Yearly</option>
+          </select>
+        </div>
+      </div>
+
+      <ResponsiveContainer width="100%" height={300}>
+        <LineChart data={chartData}>
+          <CartesianGrid strokeDasharray="3 3" vertical={false} />
+          <XAxis dataKey="name" />
+          <YAxis domain={[0, 'auto']} />
+          <Tooltip />
+          <Line type="monotone" dataKey="users" stroke="#93c5fd" strokeWidth={2} dot={false} />
+          <Line type="monotone" dataKey="revenue" stroke="#000000" strokeWidth={2} dot={false} />
+        </LineChart>
+      </ResponsiveContainer>
+    </div>
+  </div>
+
+  {/* 1/3 Width Section - Sidebar */}
+  <div className="w-1/3 bg-white rounded-lg">
+    {/* Put your content here */}
+    <div className="p-4 space-y-4">
+  <h2 className="text-lg font-semibold">Current Month Overview</h2>
+
+  <div className="flex items-center overflow-x-auto pb-1 space-x-2">
+    {dateData1.map((item) => (
+      <div
+        key={item.date}
+        className={`flex flex-col items-center cursor-pointer px-2 py-1 rounded ${
+          selectedDate === item.date ? "bg-gray-100 font-semibold" : ""
+        }`}
+        onClick={() => setSelectedDate(item.date)}
+      >
+        <span className="text-sm">{item.date}</span>
+        <span
+          className={`text-xs ${
+            item.value >= 0 ? "text-green-500" : "text-red-500"
+          }`}
+        >
+          {item.change}
+        </span>
+      </div>
+    ))}
+    <span className="ml-auto text-xs cursor-pointer">See all</span>
+  </div>
+
+  <div>
+    <h3 className="text-base font-semibold mb-2">Upcoming subscriptions this month</h3>
+
+    <div className="space-y-3">
+      {subscriptionData1[selectedDate]?.map((sub, index) => (
+        <div
+          key={index}
+          className={`group flex items-center justify-between p-3 rounded-md transition-colors duration-200 ${
+            sub.title === "Payment Due" ? "hover:bg-blue-50" : "hover:bg-blue-50"
+          }`}
+        >
+          <div className="flex items-center gap-3">
+            <div
+              className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-200 ${
+                sub.title === "Payment Due"
+                  ? "bg-gray-300 text-black group-hover:bg-gray-800 group-hover:text-white"
+                  : "bg-gray-300 text-black group-hover:bg-black group-hover:text-white"
+              }`}
+            >
+              {sub.day}
+            </div>
+            <div>
+              <div className="text-sm font-medium">{sub.title}</div>
+              <div className="text-xs text-gray-500">{sub.desc}</div>
+            </div>
+          </div>
+          <div className="text-right text-sm font-medium">{sub.users} Users</div>
+        </div>
+      )) || <p className="text-gray-400 text-sm">No subscriptions for this date.</p>}
+    </div>
+  </div>
+
+  <button className="w-full py-2 mt-4 rounded-full bg-black text-white text-sm font-medium">
+    View full list
+  </button>
+</div>
+
+    </div>
+</div>
+</div>
+
     </div>
   );
 };
