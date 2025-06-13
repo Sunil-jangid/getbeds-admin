@@ -18,7 +18,6 @@ type Field = { label: string; value: string };
 const initialContent: Record<NavKey, Field[]> = {
   "Manage Admin Accounts": [
     { label: "Full Name", value: "John Doe" },
-    { label: "Access Level", value: "Admin" },
     { label: "Email Address", value: "john.doe@example.com" },
     { label: "Phone Number", value: "+91 9876543210" },
     { label: "Account Status", value: "Active" },
