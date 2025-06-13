@@ -36,8 +36,8 @@ export function DashboardNavbar() {
   { name: 'User Management', href: '/dashboard/usermanagement' },
   { name: 'Customer Support', href: '/dashboard/customersupport' },
   { name: 'Subscription Plan', href: '/dashboard/subscription' },
-  { name: 'Settings', href: '#' },
-  { name: 'Log out', href: '#' },
+  { name: 'Settings', href: '/dashboard/Settings' },
+  { name: 'Log out', href: '/' },
 ];
 
 
