@@ -25,7 +25,7 @@ const navItems = [
     href: '/dashboard/payment',
     dropdownItems: [
       { name: 'Payment Analytics', href: '/dashboard/Payment/Payment' },
-      { name: 'Admin Payment Details', href: '/dashboard/Payment/add' },
+      { name: 'Admin Payment Details', href: '/dashboard/Payment/adminpayment' },
     ]
   },
   { name: 'Analytics', href: '/dashboard/analytics' },
