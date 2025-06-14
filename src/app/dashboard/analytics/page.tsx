@@ -306,6 +306,7 @@ const ChartSection: React.FC = () => {
         fill="url(#lineGradient)"
         strokeWidth={3}
         dot={{ r: 5, stroke: "#60A5FA", strokeWidth: 2, fill: "white" }}
+        isAnimationActive={true}
       />
     </ComposedChart>
   </ResponsiveContainer>
