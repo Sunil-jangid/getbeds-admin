@@ -7,6 +7,17 @@ import {
 import { Bed, Ambulance, Microscope, Stethoscope, PlusCircle ,Users, CreditCard, UserPlus2} from "lucide-react";
 import { ChevronDown } from "lucide-react";
 // Services data
+const activityData = [
+  { project: "Bender project", user1: "Johnson", user2: "Johnson", user3: "Johnson", user4: "Johnson", status: "Inprogress", date: "06 Jan 2024" },
+  { project: "Bender project", user1: "Johnson", user2: "Johnson", user3: "Johnson", user4: "Johnson", status: "Onboarding", date: "06 Jan 2024" },
+  { project: "Bender project", user1: "Johnson", user2: "Johnson", user3: "Johnson", user4: "Johnson", status: "Completed", date: "06 Jan 2024" },
+];
+
+const statusColors: { [key: string]: string } = {
+  Inprogress: "bg-black text-white",
+  Onboarding: "bg-black text-white",
+  Completed: "bg-black text-white",
+};
 const services = [
   {
     name: "Hospital Bed Booking",
@@ -111,6 +122,8 @@ export default function DashboardChart() {
     setIsOpen(false);
     // You can trigger chart data update here if needed
   };
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageCount = 10;
   return (
     <div className="p-10 bg-white rounded-xl shadow">
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
@@ -324,6 +337,64 @@ export default function DashboardChart() {
             <p className="font-medium">Average Revenue Per day</p>
             <p className="text-base font-bold">Rs. 12.8 K</p>
           </div>
+        </div>
+      </div>
+    </div>
+    <div className="bg-white rounded-xl p-5 shadow-sm">
+      <h3 className="font-semibold text-lg mb-4">Recent Activity</h3>
+      <div className="overflow-x-auto">
+        <table className="min-w-full text-sm text-left border-collapse">
+          <thead className="bg-gray-100 text-gray-600">
+            <tr>
+              <th className="px-4 py-3 font-medium">Users</th>
+              <th className="px-4 py-3 font-medium">Lorem Ipsum</th>
+              <th className="px-4 py-3 font-medium">Lorem Ipsum</th>
+              <th className="px-4 py-3 font-medium">Lorem Ipsum</th>
+              <th className="px-4 py-3 font-medium">Lorem Ipsum</th>
+              <th className="px-4 py-3 font-medium">Status</th>
+              <th className="px-4 py-3 font-medium">Date</th>
+            </tr>
+          </thead>
+          <tbody className="text-gray-700">
+            {activityData.map((item, index) => (
+              <tr key={index} className="border-t">
+                <td className="px-4 py-3">{item.project}</td>
+                <td className="px-4 py-3">{item.user1}</td>
+                <td className="px-4 py-3">{item.user2}</td>
+                <td className="px-4 py-3">{item.user3}</td>
+                <td className="px-4 py-3">{item.user4}</td>
+                <td className="px-4 py-3">
+                  <span className={`px-3 py-1 rounded-lg text-xs font-medium ${statusColors[item.status]}`}>
+                    {item.status}
+                  </span>
+                </td>
+                <td className="px-4 py-3">{item.date}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Pagination */}
+      <div className="flex items-center justify-between mt-4 text-sm text-gray-500">
+        <span>Showing data 1 to 8 of 255K entries</span>
+        <div className="flex space-x-1">
+          {[1, 2, 3, 4].map((page) => (
+            <button
+              key={page}
+              onClick={() => setCurrentPage(page)}
+              className={`w-8 h-8 rounded border text-sm ${
+                currentPage === page
+                  ? "bg-black text-white"
+                  : "text-gray-700 bg-white border-gray-300"
+              }`}
+            >
+              {page}
+            </button>
+          ))}
+          <span className="px-2">...</span>
+          <button className="w-8 h-8 border border-gray-300 rounded text-gray-700">{pageCount}</button>
+          <button className="w-8 h-8 border border-gray-300 rounded text-gray-700">{">"}</button>
         </div>
       </div>
     </div>
