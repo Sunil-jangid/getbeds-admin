@@ -4,85 +4,83 @@ import React, { useState, useRef, useEffect } from 'react';
 import { ChevronDown, Pencil, Trash2 } from 'lucide-react';
 import TeamCardSection from '../../../../components/dashboard/TeamCardSection';
 
-// All team data
-const techMembers = [
-  { name: "Kyle Jenner", role: "Manager", image: "/pro1.png" },
-  { name: "Robert Kale", role: "Technical Head", image: "/pro.png" },
-  { name: "Kristin Watson", role: "Senior Developer", image: "/pro1.png" },
-  { name: "Jerome Bell", role: "Senior Developer", image: "/pro2.png" },
-  { name: "Dianne Russell", role: "Junior Developer", image: "/pro3.png" },
-];
 
-const companyheads = [
-  { name: "Jerome Bell", role: "CEO", image: "/pro1.png" },
-  { name: "Dianne Russell", role: "CTO", image: "/pro2.png" },
-  { name: "Robert Kale", role: "Technical Head", image: "/pro3.png" },
-];
-
-const operationsteam = [
-  { name: "Jerome Bell", role: "Network", image: "/pro.png" },
-  { name: "Dianne Russell", role: "Manager", image: "/pro3.png" },
-];
-
-const salesmarketingteam = [
-  { name: "Jerome Bell", role: "Sales", image: "/pro2.png" },
-  { name: "Dianne Russell", role: "Marketing", image: "/pro.png" },
-  { name: "Robert Kale", role: "Technical Head", image: "/pro1.png" },
-];
-
-const recruitmenthrteam = [
-  { name: "Jerome Bell", role: "HR", image: "/pro1.png" },
-  { name: "Dianne Russell", role: "HR", image: "/pro2.png" },
-];
 
 // Employee compensation data (mapped to roles if available)
 const employeeData1 = [
-  {
-    id: 112, name: 'Mithilesh Kumar Singh', location: 'Kritipur, Kathmandu',
-    teamId: '1235BG', compensation: '1235BG', contact: '987569326', position: 'Manager'
-  },
-  {
-    id: 113, name: 'Suron Maharjan', location: 'Natole, Lalitpur',
-    teamId: '86523B', compensation: '86523B', contact: '987569326', position: 'Manager'
-  },
-  {
-    id: 114, name: 'Sandesh Bajracharya', location: 'Bhinchebahal, Lalitpur',
-    teamId: '78365D', compensation: '78365D', contact: '987569326', position: 'Developer'
-  },
-  {
-    id: 115, name: 'Subin Sedhai', location: 'Baneshwor, Kathmandu',
-    teamId: '863265F', compensation: '863265F', contact: '987569326', position: 'CTO'
-  },
-  {
-    id: 116, name: 'Wonjala Joshi', location: 'Bhalespatil, Lalitpur',
-    teamId: '1235BG', compensation: '459872B', contact: '987569326', position: 'Junior Developer'
-  },
-  {
-    id: 117, name: 'Numa Limbu', location: 'Sampang Chowk, Dharan',
-    teamId: '86523B', compensation: '742652A', contact: '987569326', position: 'Developer'
-  },
-  {
-    id: 118, name: 'Nimesh Sthapit', location: 'Newroad, Pokhara',
-    teamId: '78365D', compensation: '74123B', contact: '987569326', position: 'HR'
-  },
-  {
-    id: 119, name: 'Samikshya Basnet', location: 'Nakhipot, Lalitpur',
-    teamId: '863265F', compensation: '741369P', contact: '987569326', position: 'Marketing'
-  },
-  {
-    id: 120, name: 'Sushant Kushwar', location: 'Sinamangal, Kathmandu',
-    teamId: '1235BG', compensation: '75962K', contact: '987569326', position: 'Sales'
-  },
-  {
-    id: 121, name: 'Hrishav Gajurel', location: 'Khumaltar, Lalitpur',
-    teamId: '86523B', compensation: '459632IA', contact: '987569326', position: 'Network'
-  }
+  { id: 100, name: "Jerome Bell", role: "HR", image: "/pro1.png" , location: 'Kritipur, Kathmandu',
+    teamId: '1235BG', compensation: '1235BG', contact: '987569326', dept:'recruitmenthrteam'},
+  { id: 101, name: "Dianne Russell", role: "HR", image: "/pro2.png" , location: 'Kritipur, Kathmandu',
+    teamId: '1235BG', compensation: '1235BG', contact: '987569326', dept:'recruitmenthrteam'},
+    { id: 102, name: "Jerome Bell", role: "Sales", image: "/pro2.png" , location: 'Kritipur, Kathmandu',
+    teamId: '1235BG', compensation: '1235BG', contact: '987569326', dept:'salesmarketingteam'},
+  { id: 103, name: "Dianne Russell", role: "Marketing", image: "/pro.png" , location: 'Kritipur, Kathmandu',
+    teamId: '1235BG', compensation: '1235BG', contact: '987569326', dept:'salesmarketingteam' },
+  { id: 104, name: "Robert Kale", role: "Technical Head", image: "/pro1.png" , location: 'Kritipur, Kathmandu',
+    teamId: '1235BG', compensation: '1235BG', contact: '987569326', dept:'salesmarketingteam'},
+    { id: 105, name: "Jerome Bell", role: "Network", image: "/pro.png" , location: 'Kritipur, Kathmandu',
+    teamId: '1235BG', compensation: '1235BG', contact: '987569326', dept:'operationsteam'},
+  { id: 106, name: "Dianne Russell", role: "Manager", image: "/pro3.png" , location: 'Kritipur, Kathmandu',
+    teamId: '1235BG', compensation: '1235BG', contact: '987569326', dept:'operationsteam'},
+    { id: 107, name: "Jerome Bell", role: "CEO", image: "/pro1.png" , location: 'Kritipur, Kathmandu',
+    teamId: '1235BG', compensation: '1235BG', contact: '987569326', dept:'companyheads'},
+  { id: 108, name: "Dianne Russell", role: "CTO", image: "/pro2.png" , location: 'Kritipur, Kathmandu',
+    teamId: '1235BG', compensation: '1235BG', contact: '987569326', dept:'companyheads'},
+  { id: 109, name: "Robert Kale", role: "Technical Head", image: "/pro3.png" , location: 'Kritipur, Kathmandu',
+    teamId: '1235BG', compensation: '1235BG', contact: '987569326', dept:'companyheads'},
+  { id: 110, name: "Kyle Jenner", role: "Manager", image: "/pro1.png" , location: 'Baneshwor, Kathmandu',
+    teamId: '863265F', compensation: '863265F', contact: '987569326', dept:'techMembers'},
+  { id: 111, name: "Robert Kale", role: "Technical Head", image: "/pro.png" , location: 'Newroad, Pokhara',
+    teamId: '78365D', compensation: '74123B', contact: '987569326', dept:'techMembers'},
+  { id: 112, name: "Kristin Watson", role: "Senior Developer", image: "/pro1.png" , location: 'Kritipur, Kathmandu',
+    teamId: '1235BG', compensation: '1235BG', contact: '987569326', dept:'techMembers'},
+  { id: 113, name: "Jerome Bell", role: "Senior Developer", image: "/pro2.png" , location: 'Baneshwor, Kathmandu',
+    teamId: '863265F', compensation: '863265F', contact: '987569326', dept:'techMembers'},
+  { id: 114, name: "Dianne Russell", role: "Junior Developer", image: "/pro3.png" , location: 'Kritipur, Kathmandu',
+    teamId: '1235BG', compensation: '1235BG', contact: '987569326', dept:'techMembers'},
 ];
+
+// All team data
+// Define the type for employee objects
+type Employee = {
+  id: number;
+  name: string;
+  role: string;
+  image: string;
+  location: string;
+  teamId: string;
+  compensation: string;
+  contact: string;
+  dept: string;
+};
+
+// Declare the arrays with the correct type
+const techMembers: Employee[] = [];
+const companyheads: Employee[] = [];
+const operationsteam: Employee[] = [];
+const salesmarketingteam: Employee[] = [];
+const recruitmenthrteam: Employee[] = [];
+
+// Distribute employees to the correct team array
+employeeData1.forEach((employee) => {
+  if (employee.dept === 'techMembers') {
+    techMembers.push(employee);
+  } else if (employee.dept === 'companyheads') {
+    companyheads.push(employee);
+  } else if (employee.dept === 'operationsteam') {
+    operationsteam.push(employee);
+  } else if (employee.dept === 'salesmarketingteam') {
+    salesmarketingteam.push(employee);
+  } else if (employee.dept === 'recruitmenthrteam') {
+    recruitmenthrteam.push(employee);
+  }
+});
+
+
 
 const employeeData = Array.from({ length: 10 }, (_, i) =>
   employeeData1.map((emp, idx) => ({
     ...emp,
-    id: emp.id + i * employeeData1.length + idx, // Ensure unique IDs
   }))
 ).flat();
 
@@ -180,7 +178,7 @@ const TeamSection = () => {
                   <td className="px-4 py-3">{emp.teamId}</td>
                   <td className="px-4 py-3">{emp.compensation}</td>
                   <td className="px-4 py-3">{emp.contact}</td>
-                  <td className="px-4 py-3">{emp.position}</td>
+                  <td className="px-4 py-3">{emp.role}</td>
                   <td className="px-4 py-3 flex space-x-3">
                     <button className="text-blue-500 hover:text-blue-700">
                       <Pencil size={16} />
