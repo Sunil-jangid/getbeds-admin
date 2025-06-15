@@ -3,42 +3,49 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ChevronDown, Pencil, Trash2 } from 'lucide-react';
 import TeamCardSection from '../../../../components/dashboard/TeamCardSection';
+import { useRouter } from 'next/navigation';
 
+interface Member {
+  name: string;
+  role: string;
+  image: string;
+  id: number;
+  location: string;
+  teamId: string; 
+  compensation: string;
+  contact: string;
+  dept:string;
+  email: string,
+  yearOfJoin: number,
+  CTC: string 
+}
+
+interface TeamCardSectionProps {
+  title: string;
+  members: Member[];
+}
 
 
 // Employee compensation data (mapped to roles if available)
 const employeeData1 = [
-  { id: 100, name: "Jerome Bell", role: "HR", image: "/pro1.png" , location: 'Kritipur, Kathmandu',
-    teamId: '1235BG', compensation: '1235BG', contact: '987569326', dept:'recruitmenthrteam'},
-  { id: 101, name: "Dianne Russell", role: "HR", image: "/pro2.png" , location: 'Kritipur, Kathmandu',
-    teamId: '1235BG', compensation: '1235BG', contact: '987569326', dept:'recruitmenthrteam'},
-    { id: 102, name: "Jerome Bell", role: "Sales", image: "/pro2.png" , location: 'Kritipur, Kathmandu',
-    teamId: '1235BG', compensation: '1235BG', contact: '987569326', dept:'salesmarketingteam'},
-  { id: 103, name: "Dianne Russell", role: "Marketing", image: "/pro.png" , location: 'Kritipur, Kathmandu',
-    teamId: '1235BG', compensation: '1235BG', contact: '987569326', dept:'salesmarketingteam' },
-  { id: 104, name: "Robert Kale", role: "Technical Head", image: "/pro1.png" , location: 'Kritipur, Kathmandu',
-    teamId: '1235BG', compensation: '1235BG', contact: '987569326', dept:'salesmarketingteam'},
-    { id: 105, name: "Jerome Bell", role: "Network", image: "/pro.png" , location: 'Kritipur, Kathmandu',
-    teamId: '1235BG', compensation: '1235BG', contact: '987569326', dept:'operationsteam'},
-  { id: 106, name: "Dianne Russell", role: "Manager", image: "/pro3.png" , location: 'Kritipur, Kathmandu',
-    teamId: '1235BG', compensation: '1235BG', contact: '987569326', dept:'operationsteam'},
-    { id: 107, name: "Jerome Bell", role: "CEO", image: "/pro1.png" , location: 'Kritipur, Kathmandu',
-    teamId: '1235BG', compensation: '1235BG', contact: '987569326', dept:'companyheads'},
-  { id: 108, name: "Dianne Russell", role: "CTO", image: "/pro2.png" , location: 'Kritipur, Kathmandu',
-    teamId: '1235BG', compensation: '1235BG', contact: '987569326', dept:'companyheads'},
-  { id: 109, name: "Robert Kale", role: "Technical Head", image: "/pro3.png" , location: 'Kritipur, Kathmandu',
-    teamId: '1235BG', compensation: '1235BG', contact: '987569326', dept:'companyheads'},
-  { id: 110, name: "Kyle Jenner", role: "Manager", image: "/pro1.png" , location: 'Baneshwor, Kathmandu',
-    teamId: '863265F', compensation: '863265F', contact: '987569326', dept:'techMembers'},
-  { id: 111, name: "Robert Kale", role: "Technical Head", image: "/pro.png" , location: 'Newroad, Pokhara',
-    teamId: '78365D', compensation: '74123B', contact: '987569326', dept:'techMembers'},
-  { id: 112, name: "Kristin Watson", role: "Senior Developer", image: "/pro1.png" , location: 'Kritipur, Kathmandu',
-    teamId: '1235BG', compensation: '1235BG', contact: '987569326', dept:'techMembers'},
-  { id: 113, name: "Jerome Bell", role: "Senior Developer", image: "/pro2.png" , location: 'Baneshwor, Kathmandu',
-    teamId: '863265F', compensation: '863265F', contact: '987569326', dept:'techMembers'},
-  { id: 114, name: "Dianne Russell", role: "Junior Developer", image: "/pro3.png" , location: 'Kritipur, Kathmandu',
-    teamId: '1235BG', compensation: '1235BG', contact: '987569326', dept:'techMembers'},
+  { id: 100, name: "Aarav Mehta", role: "HR", image: "/pro3.png", location: 'Lalitpur, Kathmandu', teamId: '7612AB', compensation: '7612AB', contact: '9812345671', dept:'recruitmenthrteam', email: 'aarav.mehta100@company.com', yearOfJoin: 2021, CTC: '5.9 LPA' },
+  { id: 101, name: "Rohan Khadka", role: "HR", image: "/pro2.png", location: 'Dhulikhel, Bhaktapur', teamId: '9123BC', compensation: '9123BC', contact: '9812345672', dept:'recruitmenthrteam', email: 'rohan.khadka101@company.com', yearOfJoin: 2020, CTC: '6.1 LPA' },
+  { id: 102, name: "Vihaan Sharma", role: "Sales", image: "/pro2.png", location: 'Birgunj, Nepal', teamId: '1192CD', compensation: '1192CD', contact: '9812345673', dept:'salesmarketingteam', email: 'vihaan.sharma102@company.com', yearOfJoin: 2022, CTC: '6.0 LPA' },
+  { id: 103, name: "Aryan Joshi", role: "Marketing", image: "/pro.png", location: 'Butwal, Nepal', teamId: '2378DE', compensation: '2378DE', contact: '9812345674', dept:'salesmarketingteam', email: 'aryan.joshi103@company.com', yearOfJoin: 2021, CTC: '6.6 LPA' },
+  { id: 104, name: "Ishaan Thapa", role: "Sales", image: "/pro2.png", location: 'Bhaktapur, Kathmandu', teamId: '3245EF', compensation: '3245EF', contact: '9812345675', dept:'salesmarketingteam', email: 'ishaan.thapa104@company.com', yearOfJoin: 2017, CTC: '9.2 LPA' },
+  { id: 105, name: "Devansh Rana", role: "Network", image: "/pro.png", location: 'Hetauda, Nepal', teamId: '5489FG', compensation: '5489FG', contact: '9812345676', dept:'operationsteam', email: 'devansh.rana105@company.com', yearOfJoin: 2020, CTC: '6.3 LPA' },
+  { id: 106, name: "Kabir Basnet", role: "Manager", image: "/pro3.png", location: 'Pokhara, Nepal', teamId: '6571GH', compensation: '6571GH', contact: '9812345677', dept:'operationsteam', email: 'kabir.basnet106@company.com', yearOfJoin: 2023, CTC: '7.0 LPA' },
+  { id: 107, name: "Arjun Mishra", role: "CEO", image: "/pro3.png", location: 'Dharan, Nepal', teamId: '8643HI', compensation: '8643HI', contact: '9812345678', dept:'companyheads', email: 'arjun.mishra107@company.com', yearOfJoin: 2014, CTC: '31.0 LPA' },
+  { id: 108, name: "Yug Koirala", role: "CTO", image: "/pro2.png", location: 'Itahari, Nepal', teamId: '7812IJ', compensation: '7812IJ', contact: '9812345679', dept:'companyheads', email: 'yug.koirala108@company.com', yearOfJoin: 2016, CTC: '28.5 LPA' },
+  { id: 109, name: "Aditya Giri", role: "Technical Head", image: "/pro3.png", location: 'Nepalgunj, Nepal', teamId: '9931JK', compensation: '9931JK', contact: '9812345680', dept:'companyheads', email: 'aditya.giri109@company.com', yearOfJoin: 2018, CTC: '20.0 LPA' },
+  { id: 110, name: "Ayaan Joshi", role: "Manager", image: "/pro3.png", location: 'Janakpur, Nepal', teamId: '1236KL', compensation: '1236KL', contact: '9812345681', dept:'techMembers', email: 'ayaan.joshi110@company.com', yearOfJoin: 2022, CTC: '7.6 LPA' },
+  { id: 111, name: "Reyansh Shrestha", role: "Technical Head", image: "/pro.png", location: 'Lahan, Nepal', teamId: '1597LM', compensation: '1597LM', contact: '9812345682', dept:'techMembers', email: 'reyansh.shrestha111@company.com', yearOfJoin: 2021, CTC: '9.9 LPA' },
+  { id: 112, name: "Aarush Mahat", role: "Senior Developer", image: "/pro.png", location: 'Gorkha, Nepal', teamId: '6248MN', compensation: '6248MN', contact: '9812345683', dept:'techMembers', email: 'aarush.mahat112@company.com', yearOfJoin: 2019, CTC: '8.1 LPA' },
+  { id: 113, name: "Vivaan Bista", role: "Senior Developer", image: "/pro2.png", location: 'Tulsipur, Nepal', teamId: '4312NO', compensation: '4312NO', contact: '9812345684', dept:'techMembers', email: 'vivaan.bista113@company.com', yearOfJoin: 2020, CTC: '8.3 LPA' },
+  { id: 114, name: "Neil Kharel", role: "Junior Developer", image: "/pro3.png", location: 'Kirtipur, Nepal', teamId: '7852OP', compensation: '7852OP', contact: '9812345685', dept:'techMembers', email: 'neil.kharel114@company.com', yearOfJoin: 2023, CTC: '5.1 LPA' },
 ];
+
+
 
 // All team data
 // Define the type for employee objects
@@ -52,6 +59,9 @@ type Employee = {
   compensation: string;
   contact: string;
   dept: string;
+  email: string,
+  yearOfJoin: number,
+  CTC: string 
 };
 
 // Declare the arrays with the correct type
@@ -113,7 +123,25 @@ const TeamSection = () => {
       setCurrentPage(page);
     }
   };
-
+  const router = useRouter();
+  
+    const handleViewProfile = (member: Member) => {
+      const query = new URLSearchParams({
+        name: member.name,
+        role: member.role,
+        image: member.image,
+        id: String(member.id), 
+        location: member.location,
+        teamId: member.teamId, 
+        compensation: member.compensation, 
+        contact: member.contact, 
+        dept:member.dept,
+        email: member.email,
+        yearOfJoin: String(member.yearOfJoin),
+        CTC: member.CTC, 
+      }).toString();
+      router.push(`/dashboard/CompanyiInsights/companyteam/profile?${query}`);
+    };
   return (
     <div className="bg-gray-50 p-8 min-h-screen">
       {/* Dropdown */}
@@ -172,22 +200,26 @@ const TeamSection = () => {
             <tbody>
               {currentData.map((emp) => (
                 <tr key={emp.id} className="border-b hover:bg-gray-50">
-                  <td className="px-4 py-3">{emp.id}</td>
-                  <td className="px-4 py-3">{emp.name}</td>
-                  <td className="px-4 py-3">{emp.location}</td>
-                  <td className="px-4 py-3">{emp.teamId}</td>
-                  <td className="px-4 py-3">{emp.compensation}</td>
-                  <td className="px-4 py-3">{emp.contact}</td>
-                  <td className="px-4 py-3">{emp.role}</td>
-                  <td className="px-4 py-3 flex space-x-3">
-                    <button className="text-blue-500 hover:text-blue-700">
-                      <Pencil size={16} />
-                    </button>
-                    <button className="text-red-500 hover:text-red-700">
-                      <Trash2 size={16} />
-                    </button>
-                  </td>
-                </tr>
+  <td className="px-4 py-3">{emp.id}</td>
+  <td className="px-4 py-3">{emp.name}</td>
+  <td className="px-4 py-3">{emp.location}</td>
+  <td className="px-4 py-3">{emp.teamId}</td>
+  <td className="px-4 py-3">{emp.compensation}</td>
+  <td className="px-4 py-3">{emp.contact}</td>
+  <td className="px-4 py-3">{emp.role}</td>
+  <td className="px-4 py-3 flex space-x-3">
+    <button
+      onClick={() => handleViewProfile(emp)}
+      className="text-blue-500 hover:text-blue-700"
+    >
+      <Pencil size={16} />
+    </button>
+    <button className="text-red-500 hover:text-red-700">
+      <Trash2 size={16} />
+    </button>
+  </td>
+</tr>
+
               ))}
             </tbody>
           </table>
@@ -198,6 +230,7 @@ const TeamSection = () => {
               Showing {startIndex + 1} to {endIndex} of {totalItems} entries
             </div>
             <div className="flex flex-wrap gap-1">
+  {/* Previous button */}
   <button
     className={`px-3 py-1 rounded border ${currentPage === 1 ? 'text-gray-400 cursor-not-allowed' : 'hover:bg-gray-100'}`}
     onClick={() => handlePageChange(currentPage - 1)}
@@ -206,18 +239,27 @@ const TeamSection = () => {
     &lt;
   </button>
 
-  {Array.from({ length: totalPages }, (_, i) => i + 1)
-    .slice(Math.max(0, currentPage - 3), currentPage + 2)
-    .map((page) => (
-      <button
-        key={page}
-        onClick={() => handlePageChange(page)}
-        className={`px-3 py-1 rounded ${page === currentPage ? 'bg-gray-200 font-semibold' : 'hover:bg-gray-100'}`}
-      >
-        {page}
-      </button>
-    ))}
+  {/* Page numbers */}
+  {Array.from({ length: 5 }, (_, i) => {
+    let start = Math.max(1, currentPage - 2);
+    if (currentPage > totalPages - 2) start = Math.max(1, totalPages - 4);
+    const page = start + i;
+    return (
+      page <= totalPages && (
+        <button
+          key={page}
+          onClick={() => handlePageChange(page)}
+          className={`px-3 py-1 rounded border ${
+            page === currentPage ? 'bg-gray-200 font-semibold' : 'hover:bg-gray-100'
+          }`}
+        >
+          {page}
+        </button>
+      )
+    );
+  })}
 
+  {/* Next button */}
   <button
     className={`px-3 py-1 rounded border ${currentPage === totalPages ? 'text-gray-400 cursor-not-allowed' : 'hover:bg-gray-100'}`}
     onClick={() => handlePageChange(currentPage + 1)}
@@ -226,6 +268,7 @@ const TeamSection = () => {
     &gt;
   </button>
 </div>
+
 
           </div>
         </div>

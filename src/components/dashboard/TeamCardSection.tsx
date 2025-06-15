@@ -7,6 +7,15 @@ interface Member {
   name: string;
   role: string;
   image: string;
+  id: number;
+  location: string;
+  teamId: string; 
+  compensation: string;
+  contact: string;
+  dept:string;
+  email: string,
+  yearOfJoin: number,
+  CTC: string 
 }
 
 interface TeamCardSectionProps {
@@ -22,6 +31,15 @@ const TeamCardSection: React.FC<TeamCardSectionProps> = ({ title, members }) => 
       name: member.name,
       role: member.role,
       image: member.image,
+      id: String(member.id), 
+      location: member.location,
+      teamId: member.teamId, 
+      compensation: member.compensation, 
+      contact: member.contact, 
+      dept:member.dept,
+      email: member.email,
+      yearOfJoin: String(member.yearOfJoin),
+      CTC: member.CTC, 
     }).toString();
     router.push(`/dashboard/CompanyiInsights/companyteam/profile?${query}`);
   };
