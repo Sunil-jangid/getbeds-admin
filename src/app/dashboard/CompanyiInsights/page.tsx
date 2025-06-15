@@ -6,7 +6,8 @@ import {
 } from 'recharts';
 import { Bed, Ambulance, Microscope, Stethoscope, PlusCircle ,Users, CreditCard, UserPlus2} from "lucide-react";
 import { ChevronDown } from "lucide-react";
-// Services data
+import Link from "next/link";
+
 const activityData = [
   { project: "Bender project", user1: "Johnson", user2: "Johnson", user3: "Johnson", user4: "Johnson", status: "Inprogress", date: "06 Jan 2024" },
   { project: "Bender project", user1: "Johnson", user2: "Johnson", user3: "Johnson", user4: "Johnson", status: "Onboarding", date: "06 Jan 2024" },
@@ -230,9 +231,11 @@ export default function DashboardChart() {
       <div className="md:w-1/3 w-full bg-white p-6 rounded-xl shadow">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-md font-semibold">Top Performers</h2>
-          <button className="text-sm font-medium text-gray-500 hover:underline">
-            View Team (15)
-          </button>
+          <Link href="/dashboard/CompanyiInsights/companyteam">
+  <button className="text-sm font-medium text-gray-500 hover:underline">
+    View Team (15)
+  </button>
+</Link>
         </div>
         <div className="space-y-4">
           {topPerformers.map((person, idx) => (
