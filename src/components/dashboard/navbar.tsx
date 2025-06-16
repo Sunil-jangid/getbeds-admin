@@ -15,8 +15,8 @@ const navItems = [
     href: '/dashboard/inventory',
     dropdownItems: [
       { name: 'Manage Hospitals', href: '/dashboard/inventory/hospitals' },
-      { name: 'Manage Ambulance', href: '/dashboard/inventory/ambulance' },
-      { name: 'Manage Diagnostic Centres', href: '/dashboard/inventory/diagnostic' },
+      { name: 'Manage Ambulance', href: '/under-construction' },
+      { name: 'Manage Diagnostic Centres', href: '/under-construction' },
       { name: 'Manage Users', href: '/dashboard/inventory/users' },
     ]
   },
@@ -154,9 +154,11 @@ export function DashboardNavbar() {
           {/* Right-side icons */}
           <div className="flex items-center gap-4">
             {/* Search */}
-            <div className="bg-white p-2 rounded-full shadow-sm border border-[#F8F9FA]">
-              <Search className="h-5 w-5" />
-            </div>
+            <Link href="/under-construction">
+              <div className="bg-white p-2 rounded-full shadow-sm border border-[#F8F9FA] relative cursor-pointer hover:shadow-md transition">
+                <Search className="h-5 w-5" />
+              </div>
+            </Link>
 
             {/* Notification */}
             <Link href="/dashboard/notification">
