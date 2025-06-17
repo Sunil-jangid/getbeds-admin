@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { Bell, ChevronDown, Search } from 'lucide-react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
@@ -12,7 +12,7 @@ const navItems = [
   { name: 'Bookings', href: '/dashboard/bookings' },
   {
     name: 'Inventory',
-    href: '/dashboard/inventory',
+    href: '/dashboard/inventory/hospitals',
     dropdownItems: [
       { name: 'Manage Hospitals', href: '/dashboard/inventory/hospitals' },
       { name: 'Manage Ambulance', href: '/under-construction' },
@@ -22,7 +22,7 @@ const navItems = [
   },
   {
     name: 'Payment',
-    href: '/dashboard/payment',
+    href: '/dashboard/Payment/Payment',
     dropdownItems: [
       { name: 'Payment Analytics', href: '/dashboard/Payment/Payment' },
       { name: 'Admin Payment Details', href: '/dashboard/Payment/adminpayment' },
@@ -33,10 +33,18 @@ const navItems = [
 
 export function DashboardNavbar() {
   const pathname = usePathname();
+  const router = useRouter();
+
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [showSearchBar, setShowSearchBar] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filteredPages, setFilteredPages] = useState<{ name: string; href: string }[]>([]);
+  const [selectedHref, setSelectedHref] = useState('');
+
   const profileRef = useRef<HTMLDivElement>(null);
   const navRef = useRef<HTMLDivElement>(null);
+  const searchRef = useRef<HTMLDivElement>(null);
 
   const menuItems = [
     { name: 'Profile', href: '/dashboard/profile' },
@@ -46,6 +54,15 @@ export function DashboardNavbar() {
     { name: 'Settings', href: '/dashboard/Settings' },
     { name: 'Log out', href: '/' },
   ];
+
+  const allPages = navItems.flatMap((item) =>
+    item.dropdownItems
+      ? [
+          { name: item.name, href: item.href },
+          ...item.dropdownItems,
+        ]
+      : [{ name: item.name, href: item.href }]
+  );
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -62,11 +79,56 @@ export function DashboardNavbar() {
       ) {
         setOpenDropdown(null);
       }
+
+      if (
+        searchRef.current &&
+        !searchRef.current.contains(event.target as Node)
+      ) {
+        setFilteredPages([]);
+      }
     };
 
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  const handleSearchToggle = () => {
+    setShowSearchBar((prev) => !prev);
+    setSearchQuery('');
+    setFilteredPages([]);
+    setSelectedHref('');
+  };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const query = e.target.value.toLowerCase();
+    setSearchQuery(query);
+
+    const matched = allPages.filter((page) =>
+      page.name.toLowerCase().includes(query)
+    );
+    setFilteredPages(matched);
+    setSelectedHref('');
+  };
+
+  const handleSuggestionClick = (item: { name: string; href: string }) => {
+    setSearchQuery(item.name);
+    setFilteredPages([]);
+    setSelectedHref(item.href);
+  };
+
+  const handleSearchSubmit = () => {
+    const finalHref =
+      selectedHref || allPages.find((page) => page.name.toLowerCase() === searchQuery.toLowerCase())?.href;
+
+    if (finalHref) {
+      router.push(finalHref);
+      setShowSearchBar(false);
+      setSearchQuery('');
+      setSelectedHref('');
+    } else {
+      alert('No matching page found');
+    }
+  };
 
   return (
     <nav className="sticky top-0 z-50 px-4 py-3 bg-background">
@@ -75,90 +137,127 @@ export function DashboardNavbar() {
 
           {/* Logo */}
           <div className="flex-shrink-0">
-  <Link href="/dashboard" className="flex items-center gap-2">
-    <span className="text-6xl font-bold text-sky-500">G</span>
-    <span className="font-bold text-xl">GetBeds</span>
-  </Link>
-</div>
+            <Link href="/dashboard" className="flex items-center gap-2">
+              <span className="text-6xl font-bold text-sky-500">G</span>
+              <span className="font-bold text-xl">GetBeds</span>
+            </Link>
+          </div>
 
+          {/* Navigation or Search */}
+          <div
+            className="relative flex items-center gap-1 bg-background/50 backdrop-blur-sm px-2 rounded-full"
+            ref={navRef}
+          >
+            {showSearchBar ? (
+              <div className="relative flex flex-col px-4 py-2" ref={searchRef}>
+                <div className="flex gap-2 items-center w-full max-w-3xl">
+                  <input
+                    type="text"
+                    placeholder="Search pages..."
+                    value={searchQuery}
+                    onChange={handleSearchChange}
+                    className="w-96 px-4 py-2 text-sm border rounded-lg focus:outline-none"
+                  />
+                  <button
+                    onClick={handleSearchSubmit}
+                    className="bg-black text-white text-sm px-4 py-2 rounded-lg hover:bg-gray-800"
+                  >
+                    Search
+                  </button>
+                </div>
 
-          {/* Navigation Links */}
-          <div className="flex items-center gap-1 bg-background/50 backdrop-blur-sm px-2 rounded-full" ref={navRef}>
-            {navItems.map((item) => {
-              const isDropdownOpen = openDropdown === item.name;
-              const isActive =
-                pathname === item.href ||
-                item.dropdownItems?.some((sub) => pathname === sub.href);
-
-              if (item.dropdownItems) {
-                return (
-                  <div key={item.href} className="relative">
-                    <button
-                      onClick={() =>
-                        setOpenDropdown(isDropdownOpen ? null : item.name)
-                      }
-                      className={cn(
-                        'px-4 py-2 rounded-full text-sm font-medium transition-colors flex items-center gap-1',
-                        isActive ? 'bg-black text-white' : 'hover:bg-gray-100'
-                      )}
-                    >
-                      {item.name}
-                      <ChevronDown className="h-4 w-4" />
-                    </button>
-
-                    {isDropdownOpen && (
-                      <div className="absolute top-full mt-2 w-56 bg-white border border-gray-200 rounded-2xl shadow-lg z-50 overflow-hidden">
-                        {item.dropdownItems.map((dropdownItem, index) => {
-                          const isSubActive = pathname === dropdownItem.href;
-                          return (
-                            <Link
-                              key={dropdownItem.href}
-                              href={dropdownItem.href}
-                              onClick={() => setOpenDropdown(null)}
-                              className={cn(
-                                'block px-4 py-2 text-sm transition-all w-full',
-                                index === 0 ? 'rounded-t-2xl' : '',
-                                index === item.dropdownItems.length - 1 ? 'rounded-b-2xl' : '',
-                                isSubActive
-                                  ? 'bg-black text-white'
-                                  : 'hover:bg-black hover:text-white text-black'
-                              )}
-                            >
-                              {dropdownItem.name}
-                            </Link>
-                          );
-                        })}
-                      </div>
-                    )}
+                {filteredPages.length > 0 && (
+                  <div className="absolute top-[100%] mt-1 left-0 w-full bg-white border border-gray-300 rounded-lg shadow-lg z-50 max-h-52 overflow-y-auto">
+                    {filteredPages.map((item) => (
+                      <button
+                        key={item.href}
+                        onClick={() => handleSuggestionClick(item)}
+                        className="text-left w-full px-4 py-2 text-sm hover:bg-gray-100"
+                      >
+                        {item.name}
+                      </button>
+                    ))}
                   </div>
-                );
-              }
+                )}
+              </div>
+            ) : (
+              navItems.map((item) => {
+                const isDropdownOpen = openDropdown === item.name;
+                const isActive =
+                  pathname === item.href ||
+                  item.dropdownItems?.some((sub) => pathname === sub.href);
 
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={cn(
-                    'px-4 py-2 rounded-full text-sm font-medium transition-colors',
-                    pathname === item.href
-                      ? 'bg-black text-white'
-                      : 'text-black hover:bg-gray-100'
-                  )}
-                >
-                  {item.name}
-                </Link>
-              );
-            })}
+                if (item.dropdownItems) {
+                  return (
+                    <div key={item.href} className="relative">
+                      <button
+                        onClick={() =>
+                          setOpenDropdown(isDropdownOpen ? null : item.name)
+                        }
+                        className={cn(
+                          'px-4 py-2 rounded-full text-sm font-medium transition-colors flex items-center gap-1',
+                          isActive ? 'bg-black text-white' : 'hover:bg-gray-100'
+                        )}
+                      >
+                        {item.name}
+                        <ChevronDown className="h-4 w-4" />
+                      </button>
+
+                      {isDropdownOpen && (
+                        <div className="absolute top-full mt-2 w-56 bg-white border border-gray-200 rounded-2xl shadow-lg z-50 overflow-hidden">
+                          {item.dropdownItems.map((dropdownItem, index) => {
+                            const isSubActive = pathname === dropdownItem.href;
+                            return (
+                              <Link
+                                key={dropdownItem.href}
+                                href={dropdownItem.href}
+                                onClick={() => setOpenDropdown(null)}
+                                className={cn(
+                                  'block px-4 py-2 text-sm transition-all w-full',
+                                  index === 0 ? 'rounded-t-2xl' : '',
+                                  index === item.dropdownItems.length - 1 ? 'rounded-b-2xl' : '',
+                                  isSubActive
+                                    ? 'bg-black text-white'
+                                    : 'hover:bg-black hover:text-white text-black'
+                                )}
+                              >
+                                {dropdownItem.name}
+                              </Link>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  );
+                }
+
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={cn(
+                      'px-4 py-2 rounded-full text-sm font-medium transition-colors',
+                      pathname === item.href
+                        ? 'bg-black text-white'
+                        : 'text-black hover:bg-gray-100'
+                    )}
+                  >
+                    {item.name}
+                  </Link>
+                );
+              })
+            )}
           </div>
 
           {/* Right-side icons */}
           <div className="flex items-center gap-4">
-            {/* Search */}
-            <Link href="/under-construction">
-              <div className="bg-white p-2 rounded-full shadow-sm border border-[#F8F9FA] relative cursor-pointer hover:shadow-md transition">
-                <Search className="h-5 w-5" />
-              </div>
-            </Link>
+            {/* Search Icon */}
+            <div
+              onClick={handleSearchToggle}
+              className="bg-white p-2 rounded-full shadow-sm border border-[#F8F9FA] relative cursor-pointer hover:shadow-md transition"
+            >
+              <Search className="h-5 w-5" />
+            </div>
 
             {/* Notification */}
             <Link href="/dashboard/notification">
@@ -168,7 +267,7 @@ export function DashboardNavbar() {
               </div>
             </Link>
 
-            {/* Profile Dropdown */}
+            {/* Profile */}
             <div className="relative" ref={profileRef}>
               <div
                 onClick={() => setIsProfileOpen(!isProfileOpen)}
@@ -178,10 +277,12 @@ export function DashboardNavbar() {
                   <span className="text-sm font-medium text-black">John Doe</span>
                   <span className="text-xs text-muted-foreground text-gray-500">Admin</span>
                 </div>
-                <img
+                <Image
                   src="/pro.png"
                   alt="Profile"
-                  className="w-8 h-8 rounded-full object-cover"
+                  width={32}
+                  height={32}
+                  className="rounded-full object-cover"
                 />
               </div>
 
