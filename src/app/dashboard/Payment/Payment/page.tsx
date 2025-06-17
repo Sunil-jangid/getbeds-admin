@@ -196,7 +196,7 @@ export default function AnalyticsDashboard() {
   }, [activeTab, filterRange, searchTerm]);
 
   return (
-    <div>
+    <div >
     <div className="p-8 grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-4 max-w-full">
       {/* 1. Payment Summary */}
       <div className="bg-white rounded-2xl p-4 shadow flex flex-col md:flex-row items-center md:items-start col-span-1 max-w-[450px]">
