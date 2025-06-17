@@ -28,7 +28,7 @@ export default function RootLayout({
         </div>
 
         {/* Desktop View - centered content */}
-        <div className="hidden lg:flex w-full h-full items-center justify-center">
+        <div className="w-full h-full items-center justify-center">
           {children}
         </div>
       </body>
