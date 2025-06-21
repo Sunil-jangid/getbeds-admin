@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { FaSearch, FaFilter, FaPlus } from "react-icons/fa";
 import { Button } from '@/components/ui/button';
+import Link from "next/link";
 
 type Hospital = {
   name: string;
@@ -112,9 +113,11 @@ const ManageHospitals: React.FC = () => {
             ))}
           </select>
 
-          <button className="bg-black text-white text-sm px-4 py-2 rounded shadow flex items-center gap-1 hover:bg-gray-900">
-            <FaPlus className="text-xs" /> Add Hospital Details
-          </button>
+          <Link href="/dashboard/details" passHref>
+  <button className="bg-black text-white text-sm px-4 py-2 rounded shadow flex items-center gap-1 hover:bg-gray-900">
+    <FaPlus className="text-xs" /> Add Hospital Details
+  </button>
+</Link>
         </div>
       </div>
 
