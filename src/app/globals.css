@@ -34,19 +34,19 @@
     /* shadcn-ui required variables */
     --border: var(--black-200);
     --input: var(--black-300);
-    --ring: var(--purple-500);
+    --ring: #8ECAE6;
     --radius: 0.5rem;
     --card: var(--black-50);
     --card-foreground: var(--black-900);
     --popover: var(--black-50);
     --popover-foreground: var(--black-900);
-    --primary: var(--purple-500);
+    --primary: #8ECAE6;
     --primary-foreground: var(--purple-50);
     --secondary: var(--black-200);
     --secondary-foreground: var(--black-900);
     --muted: var(--black-100);
     --muted-foreground: var(--black-600);
-    --accent: var(--purple-100);
+    --accent: #dbf1fa;
     --accent-foreground: var(--purple-900);
     --destructive: #ff4747;
     --destructive-foreground: var(--black-50);
