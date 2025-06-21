@@ -164,7 +164,7 @@ const ChartSection: React.FC = () => {
     <div className="min-h-screen justify-center px-10">
     <div className="flex gap-4 w-full py-6 h-[400px]">
       {/* Bar Chart Section */}
-      <div className="bg-white rounded-2xl shadow p-6 w-2/7 h-full flex flex-col">
+      <div className="bg-white rounded-2xl shadow p-6 w-2/7 h-full flex flex-col max-w-md">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-semibold">Lorem Ipsum</h2>
           <select
@@ -306,6 +306,7 @@ const ChartSection: React.FC = () => {
         fill="url(#lineGradient)"
         strokeWidth={3}
         dot={{ r: 5, stroke: "#60A5FA", strokeWidth: 2, fill: "white" }}
+        isAnimationActive={true}
       />
     </ComposedChart>
   </ResponsiveContainer>

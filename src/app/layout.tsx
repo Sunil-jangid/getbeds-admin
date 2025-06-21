@@ -16,7 +16,22 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={`${inter.className} min-h-screen flex items-center justify-center`}>
+        {/* Mobile View Warning */}
+        <div className="block lg:hidden w-screen h-screen flex items-center justify-center text-center px-6">
+          <div>
+            <h1 className="text-2xl font-semibold">This website works only on Desktop.</h1>
+            <p className="mt-4 text-gray-600">
+              Please open this site on a desktop device or increase your screen width.
+            </p>
+          </div>
+        </div>
+
+        {/* Desktop View - centered content */}
+        <div className="w-full h-full items-center justify-center">
+          {children}
+        </div>
+      </body>
     </html>
   );
 }
