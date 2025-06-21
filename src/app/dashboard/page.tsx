@@ -9,7 +9,6 @@ import TotalRevenue from "@/components/dashboard/TotalRevenue";
 import AnalyticsCardList from "@/components/dashboard/AnalyticsCardList";
 import PatientInsightsChart from "@/components/dashboard/PatientInsightsChart";
 import HospitalServiceCards from "@/components/dashboard/HospitalServiceCards";
-import BookingsTable, { Booking } from "@/components/dashboard/BookingsTable";
 import StatCardsGrid from "@/components/dashboard/StatCards";
 import "react-circular-progressbar/dist/styles.css";
 import "react-datepicker/dist/react-datepicker.css";
@@ -173,34 +172,6 @@ const Dashboard = () => {
   offline: number;
 };
 
-function generateDummyData(): Booking[] {
-  const getRandomDate = (start: Date, end: Date) =>
-    new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
-
-  const names = ["Jane Cooper", "Floyd Miles", "Ronald Richards"];
-  const roomPlans = ["Standard", "Premium", "Deluxe"];
-  const statuses: ("Processed" | "Pending")[] = ["Processed", "Pending"];
-
-  return Array.from({ length: 500 }, () => {
-    const admission = getRandomDate(new Date(2020, 5), new Date(2024, 0));
-    const discharge = new Date(admission.getTime() + Math.floor(Math.random() * 7 + 1) * 86400000);
-    const totalDays = Math.floor((discharge.getTime() - admission.getTime()) / 86400000);
-
-    return {
-      name: names[Math.floor(Math.random() * names.length)],
-      bookingId: "#" + Math.floor(Math.random() * 1000000),
-      admissionDate: admission.toISOString().split("T")[0],
-      dischargeDate: discharge.toISOString().split("T")[0],
-      totalDays: `${totalDays} ${totalDays > 1 ? "days" : "day"}`,
-      roomPlan: `${
-        roomPlans[Math.floor(Math.random() * roomPlans.length)]
-      }`,
-      contact: "+91-" + Math.floor(1000000000 + Math.random() * 9000000000),
-      price: Math.floor(Math.random() * 30000 + 5000),
-      status: statuses[Math.floor(Math.random() * statuses.length)],
-    };
-  });
-}
 
 const revenueData = [
   { day: 'Monday', online: 14000, offline: 12000 },
@@ -313,74 +284,81 @@ const statCards = [
 
   const [selectedTimeframe, setSelectedTimeframe] = useState("Daily");
   const [open, setOpen] = useState(false);
-  const bookings = generateDummyData();
 
   return (
-    <div className="min-h-screen flex justify-center px-4">
-      <div className="w-full max-w-7xl p-6 space-y-6">
-        {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div>
-            <p className="text-2xl text-gray-500">Hello {adminData.name}!</p>
-            <h1 className="text-5xl font-bold">{greeting}</h1>
-            <p className="text-1xl text-gray-400">{adminData.location}</p>
-          </div>
-          <div className="flex flex-wrap items-center gap-4">
-            <select
-              className="border rounded-md px-6 py-2"
-              value={selectedYear}
-              onChange={(e) => setSelectedYear(e.target.value)}
-            >
-              {timeframeOptions.map((option) => (
-                <option key={option.value} value={option.value}>{option.label}</option>
-              ))}
-            </select>
-            <button className="bg-gray-100 px-6 py-2 rounded-md text-sm">Export CSV</button>
-            <Link href="http://localhost:3000/dashboard/inventory/hospitals">
-              <button className="bg-black text-white px-6 py-2 rounded-full text-sm">
-                Add New +
-              </button>
-            </Link>
-          </div>
+  <div className="w-full min-h-screen bg-white overflow-x-hidden">
+    <div className="w-full flex flex-col px-4 sm:px-6 lg:px-8 py-6 max-w-[100vw]">
+      {/* Header */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 w-full">
+        {/* Greeting */}
+        <div>
+          <p className="text-2xl text-gray-500">Hello {adminData.name}!</p>
+          <h1 className="text-5xl font-bold">{greeting}</h1>
+          <p className="text-xl text-gray-400">{adminData.location}</p>
         </div>
-
-        {/* Summary Cards */}
-        <div className="flex flex-wrap justify-center gap-5">
-          {getCardsData().map(item => (
-            <SummaryCard key={item.id} item={item} className="w-[360px] h-[400px]" />
-          ))}
+        
+        {/* Controls */}
+        <div className="flex flex-wrap items-center gap-4">
+          <select
+            className="border rounded-md px-6 py-2"
+            value={selectedYear}
+            onChange={(e) => setSelectedYear(e.target.value)}
+          >
+            {timeframeOptions.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+          <button className="bg-gray-100 px-6 py-2 rounded-md text-sm">Export CSV</button>
+          <Link href="/dashboard/inventory/hospitals">
+            <button className="bg-black text-white px-6 py-2 rounded-full text-sm">Add New +</button>
+          </Link>
         </div>
+      </div>
 
-        {/* Overview Stats */}
+      {/* Summary Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full mt-6">
+  {getCardsData().map((item) => (
+    <SummaryCard key={item.id} item={item} className="w-full h-[400px]" />
+  ))}
+</div>
+
+
+      {/* Other sections with responsive spacing */}
+      <div className="mt-6">
         <OverviewStats data={getOverviewStats()} />
+      </div>
 
-        {/* Charts */}
+      <div className="mt-6">
         <ChartsSection pieData={getPieData()} barData={getBarData()} />
+      </div>
 
-        {/* Performance Cards */}
+      <div className="mt-6">
         <PerformanceOverview data={getPerformanceData()} />
+      </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-      <TotalRevenue
-        revenueData={revenueData}
-        selectedTimeframe={selectedTimeframe}
-        setSelectedTimeframe={setSelectedTimeframe}
-        timeframes={timeframes}
-        open={open}
-        setOpen={setOpen}
-      />
-      <AnalyticsCardList cardData={cardData} />
-      <HospitalServiceCards cardData1={cardData1} />
-    </div>
+      <div className="mt-6 grid grid-cols-1 lg:grid-cols-12 gap-6 w-full">
+        <TotalRevenue
+          revenueData={revenueData}
+          selectedTimeframe={selectedTimeframe}
+          setSelectedTimeframe={setSelectedTimeframe}
+          timeframes={timeframes}
+          open={open}
+          setOpen={setOpen}
+        />
+        <AnalyticsCardList cardData={cardData} />
+        <HospitalServiceCards cardData1={cardData1} />
+      </div>
 
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      <PatientInsightsChart data={patientInsightsData} />
-      <StatCardsGrid cards={statCards} />
-    </div>
-    
+      <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6 w-full">
+        <PatientInsightsChart data={patientInsightsData} />
+        <StatCardsGrid cards={statCards} />
       </div>
     </div>
-  );
+  </div>
+);
+
 };
 
 export default Dashboard;

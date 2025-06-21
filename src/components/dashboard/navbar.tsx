@@ -18,7 +18,7 @@ const navItems = [
       { name: 'Manage Ambulance', href: '/under-construction' },
       { name: 'Manage Diagnostic Centres', href: '/under-construction' },
       { name: 'Manage Users', href: '/dashboard/inventory/users' },
-    ]
+    ],
   },
   {
     name: 'Payment',
@@ -26,7 +26,7 @@ const navItems = [
     dropdownItems: [
       { name: 'Payment Analytics', href: '/dashboard/Payment/Payment' },
       { name: 'Admin Payment Details', href: '/dashboard/Payment/adminpayment' },
-    ]
+    ],
   },
   { name: 'Analytics', href: '/dashboard/analytics' },
 ];
@@ -57,33 +57,19 @@ export function DashboardNavbar() {
 
   const allPages = navItems.flatMap((item) =>
     item.dropdownItems
-      ? [
-          { name: item.name, href: item.href },
-          ...item.dropdownItems,
-        ]
+      ? [{ name: item.name, href: item.href }, ...item.dropdownItems]
       : [{ name: item.name, href: item.href }]
   );
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        profileRef.current &&
-        !profileRef.current.contains(event.target as Node)
-      ) {
+      if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
         setIsProfileOpen(false);
       }
-
-      if (
-        navRef.current &&
-        !navRef.current.contains(event.target as Node)
-      ) {
+      if (navRef.current && !navRef.current.contains(event.target as Node)) {
         setOpenDropdown(null);
       }
-
-      if (
-        searchRef.current &&
-        !searchRef.current.contains(event.target as Node)
-      ) {
+      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
         setFilteredPages([]);
       }
     };
@@ -118,7 +104,10 @@ export function DashboardNavbar() {
 
   const handleSearchSubmit = () => {
     const finalHref =
-      selectedHref || allPages.find((page) => page.name.toLowerCase() === searchQuery.toLowerCase())?.href;
+      selectedHref ||
+      allPages.find(
+        (page) => page.name.toLowerCase() === searchQuery.toLowerCase()
+      )?.href;
 
     if (finalHref) {
       router.push(finalHref);
@@ -131,10 +120,9 @@ export function DashboardNavbar() {
   };
 
   return (
-    <nav className="sticky top-0 z-50 px-4 py-3 bg-background">
-      <div className="max-w-7xl mx-auto">
-        <div className="bg-white rounded-[40px] shadow-lg border border-[#F8F9FA] px-6 py-4 flex items-center justify-between">
-
+    <nav className="sticky top-0 z-50 w-full py-3 bg-background">
+      <div className="w-full px-4 sm:px-6 lg:px-8">
+        <div className="w-full bg-white rounded-[40px] shadow-lg border border-[#F8F9FA] px-4 sm:px-6 py-4 flex flex-wrap items-center justify-between gap-4">
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link href="/dashboard" className="flex items-center gap-2">
@@ -145,18 +133,18 @@ export function DashboardNavbar() {
 
           {/* Navigation or Search */}
           <div
-            className="relative flex items-center gap-1 bg-background/50 backdrop-blur-sm px-2 rounded-full"
+            className="relative flex flex-wrap items-center gap-2 bg-background/50 backdrop-blur-sm px-2 py-1 rounded-full"
             ref={navRef}
           >
             {showSearchBar ? (
               <div className="relative flex flex-col px-4 py-2" ref={searchRef}>
-                <div className="flex gap-2 items-center w-full max-w-3xl">
+                <div className="flex gap-2 items-center w-full max-w-[90vw] sm:max-w-3xl">
                   <input
                     type="text"
                     placeholder="Search pages..."
                     value={searchQuery}
                     onChange={handleSearchChange}
-                    className="w-96 px-4 py-2 text-sm border rounded-lg focus:outline-none"
+                    className="w-full px-4 py-2 text-sm border rounded-lg focus:outline-none"
                   />
                   <button
                     onClick={handleSearchSubmit}

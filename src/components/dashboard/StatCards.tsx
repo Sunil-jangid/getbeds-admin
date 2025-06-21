@@ -22,7 +22,7 @@ const StatCard: React.FC<StatCardProps> = ({ title, value, percentage, positive 
           {positive ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
           {percentage}
         </div>
-        <button className="bg-violet-100 text-violet-600 text-xs px-2 py-1 rounded-md hover:bg-violet-200 transition">
+        <button className="bg-violet-100 text-violet-600 text-xs px-1 py-1 rounded-md hover:bg-violet-200 transition">
           View More
         </button>
       </div>

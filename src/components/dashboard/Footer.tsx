@@ -6,12 +6,12 @@ import { FaFacebookF, FaLinkedinIn, FaTwitter } from "react-icons/fa";
 const Footer = () => {
   return (
     <footer className="bg-white w-full border-t mt-auto">
-      <div className="max-w-7xl mx-auto px-4 py-10 grid grid-cols-1 md:grid-cols-4 gap-8 text-sm text-gray-600">
+      <div className="w-full px-4 sm:px-6 lg:px-8 py-10 grid grid-cols-1 md:grid-cols-4 gap-8 text-sm text-gray-600">
         
         {/* App Download Section */}
         <div className="md:col-span-2">
           <h2 className="text-lg font-semibold text-black mb-4">Download the app below</h2>
-          <div className="flex gap-4 mb-4">
+          <div className="flex flex-wrap gap-4 mb-4">
             <Image src="/apply.png" alt="App Store" width={140} height={40} />
             <Image src="/android.png" alt="Google Play" width={140} height={40} />
           </div>
@@ -38,7 +38,7 @@ const Footer = () => {
         {/* Contact Section */}
         <div>
           <h3 className="text-sm font-semibold text-black mb-3">Need any assistance? Talk to us :</h3>
-          <div className="text-sm mb-2">
+          <div className="text-sm mb-4">
             <p className="font-semibold">Business Manager</p>
             <p>John Doe</p>
             <p>support@gmail.com</p>
@@ -54,13 +54,13 @@ const Footer = () => {
       </div>
 
       {/* Bottom Footer */}
-      <div className="border-t text-gray-500 py-4 px-4 flex flex-col md:flex-row justify-between items-center">
+      <div className="border-t text-gray-500 py-4 px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4">
         <div className="flex items-center gap-2">
           <div className="bg-purple-600 text-white font-bold px-2 py-1 rounded">G</div>
           <span className="text-sm">GetBeds</span>
         </div>
-        <p className="text-xs">© 2024 getBeds. All Rights Reserved</p>
-        <div className="flex space-x-4 mt-2 md:mt-0">
+        <p className="text-xs text-center">© 2024 getBeds. All Rights Reserved</p>
+        <div className="flex space-x-4">
           <FaFacebookF className="cursor-pointer" />
           <FaLinkedinIn className="cursor-pointer" />
           <FaTwitter className="cursor-pointer" />

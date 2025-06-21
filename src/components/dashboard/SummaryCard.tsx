@@ -60,14 +60,17 @@ const SummaryCard: React.FC<SummaryCardProps> = ({ item, className = "" }) => {
         </div>
 
         <select
-          value={timeframe}
-          onChange={(e) => setTimeframe(e.target.value)}
-          className="bg-gray-100 rounded-full text-xs px-3 py-1 text-gray-700 self-start"
-        >
-          {timeframes.map((tf) => (
-            <option key={tf} value={tf}>{tf}</option>
-          ))}
-        </select>
+  value={timeframe}
+  onChange={(e) => setTimeframe(e.target.value)}
+  className="bg-white border border-gray-300 rounded text-xs px-4 py-1 text-gray-700 shadow-sm focus:outline-none duration-200"
+>
+  {timeframes.map((tf) => (
+    <option key={tf} value={tf} className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">
+      {tf}
+    </option>
+  ))}
+</select>
+
       </div>
 
       {/* Growth */}
