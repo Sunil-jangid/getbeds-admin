@@ -1,4 +1,4 @@
-// components/dashboard/ChartsSection.tsx
+"use client";
 
 import {
   PieChart,
@@ -33,8 +33,8 @@ type Props = {
 const ChartsSection = ({ pieData, barData }: Props) => {
   return (
     <div className="grid lg:grid-cols-3 gap-6 mt-6">
-      {/* Pie Chart */}
-      <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-sm">
+      {/* Pie Chart (1/3 width) */}
+      <div className="bg-white p-6 rounded-lg shadow-md col-span-1">
         <h3 className="text-lg font-semibold text-gray-800 mb-4">Area Wise Bookings</h3>
         <ResponsiveContainer width="100%" height={250}>
           <PieChart>
@@ -60,13 +60,15 @@ const ChartsSection = ({ pieData, barData }: Props) => {
                 style={{ backgroundColor: entry.color }}
               ></div>
               <span className="text-sm text-gray-700">{entry.name}</span>
-              <span className="ml-auto font-semibold text-gray-900">{entry.value} Bookings</span>
+              <span className="ml-auto font-semibold text-gray-900">
+                {entry.value} Bookings
+              </span>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Bar Chart */}
+      {/* Bar Chart (2/3 width) */}
       <div className="bg-white p-6 rounded-lg shadow-md col-span-2">
         <h3 className="text-lg font-semibold text-gray-800 mb-4">Inventory v/s Utilization</h3>
         <ResponsiveContainer width="100%" height={300}>

@@ -1,8 +1,8 @@
-'use client'
+"use client";
 
 import React, { useState } from "react";
-import { FaSearch, FaFilter, FaPlus } from "react-icons/fa";
-import { Button } from '@/components/ui/button';
+import { FaSearch, FaPlus } from "react-icons/fa";
+import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
 type Hospital = {
@@ -35,7 +35,7 @@ const ManageHospitals: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCity, setSelectedCity] = useState("All");
 
-  const cities = ["All", ...Array.from(new Set(hospitals.map(h => h.city)))];
+  const cities = ["All", ...Array.from(new Set(hospitals.map((h) => h.city)))];
 
   const filteredData = hospitals.filter((hospital) => {
     const matchesSearch = hospital.name.toLowerCase().includes(searchTerm.toLowerCase());
@@ -44,11 +44,7 @@ const ManageHospitals: React.FC = () => {
   });
 
   const totalPages = Math.ceil(filteredData.length / ITEMS_PER_PAGE);
-
-  const currentHospitals = filteredData.slice(
-    (currentPage - 1) * ITEMS_PER_PAGE,
-    currentPage * ITEMS_PER_PAGE
-  );
+  const currentHospitals = filteredData.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
 
   const getVisiblePageNumbers = () => {
     const start = Math.max(1, currentPage - Math.floor(MAX_VISIBLE_PAGES / 2));
@@ -64,7 +60,7 @@ const ManageHospitals: React.FC = () => {
 
   const toggleBlockHospital = (index: number) => {
     const globalIndex = (currentPage - 1) * ITEMS_PER_PAGE + index;
-    setHospitals(prev => {
+    setHospitals((prev) => {
       const updated = [...prev];
       updated[globalIndex] = {
         ...updated[globalIndex],
@@ -75,15 +71,17 @@ const ManageHospitals: React.FC = () => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto py-6 px-4">
-      <div className="flex justify-between items-center flex-wrap gap-4 mb-6">
-        <div className="flex items-center space-x-2 flex-grow max-w-xl">
-          <div className="flex items-center border rounded-md px-3 h-9 flex-grow bg-white shadow">
+    <div className="w-full min-h-screen bg-white px-2 py-3">
+      {/* Header Controls */}
+      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-4 w-full">
+        {/* Search Bar */}
+        <div className="flex flex-col sm:flex-row flex-grow gap-2 w-full max-w-3xl">
+          <div className="flex items-center border rounded-md px-3 py-1.5 flex-grow bg-white shadow-sm">
             <FaSearch className="text-gray-400" />
             <input
               type="text"
-              placeholder="Search"
-              className="ml-3 outline-none flex-grow text-sm"
+              placeholder="Search hospitals..."
+              className="ml-3 outline-none flex-grow text-sm bg-transparent"
               value={searchTerm}
               onChange={(e) => {
                 setSearchTerm(e.target.value);
@@ -92,16 +90,17 @@ const ManageHospitals: React.FC = () => {
             />
           </div>
           <button
-            className="bg-black text-white text-sm px-4 py-2 rounded shadow hover:bg-gray-900"
+            className="bg-black text-white text-sm px-3 py-1.5 rounded shadow hover:bg-gray-900"
             onClick={() => setCurrentPage(1)}
           >
             Search
           </button>
         </div>
 
-        <div className="flex items-center space-x-2">
+        {/* Filters & Add */}
+        <div className="flex items-center gap-2 w-full sm:w-auto">
           <select
-            className="border text-sm rounded px-3 py-2 shadow"
+            className="border text-sm rounded px-2 py-1.5 shadow bg-white"
             value={selectedCity}
             onChange={(e) => {
               setSelectedCity(e.target.value);
@@ -109,61 +108,65 @@ const ManageHospitals: React.FC = () => {
             }}
           >
             {cities.map((city) => (
-              <option key={city} value={city}>{city}</option>
+              <option key={city} value={city}>
+                {city}
+              </option>
             ))}
           </select>
 
           <Link href="/dashboard/details" passHref>
-  <button className="bg-black text-white text-sm px-4 py-2 rounded shadow flex items-center gap-1 hover:bg-gray-900">
-    <FaPlus className="text-xs" /> Add Hospital Details
-  </button>
-</Link>
+            <button className="bg-black text-white text-sm px-3 py-1.5 rounded shadow flex items-center gap-2 hover:bg-gray-900">
+              <FaPlus className="text-xs" />
+              Add Hospital
+            </button>
+          </Link>
         </div>
       </div>
 
-      {currentHospitals.map((hospital, index) => (
-        <div
-          key={index}
-          className="bg-white p-4 rounded-md border border-gray-300 shadow-md flex items-center justify-between mb-4"
-        >
-          <div className="flex items-start gap-4">
-            <img
-              src={hospital.imageUrl}
-              alt={hospital.name}
-              className="w-25 h-24 rounded object-cover bg-gray-100 border border-gray-200"
-            />
-            <div>
-              <h2 className="font-semibold text-sm">{hospital.name}</h2>
-              <p className="text-xs text-gray-500">{hospital.address}</p>
+      {/* Hospital Cards */}
+      <div className="space-y-3">
+        {currentHospitals.map((hospital, index) => (
+          <div
+            key={index}
+            className="w-full bg-white p-3 rounded-md border border-gray-300 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3"
+          >
+            <div className="flex gap-3 w-full sm:w-auto">
+              <img
+                src={hospital.imageUrl}
+                alt={hospital.name}
+                className="w-24 h-24 rounded object-cover bg-gray-100 border border-gray-200"
+              />
+              <div className="text-sm">
+                <h2 className="font-semibold">{hospital.name}</h2>
+                <p className="text-xs text-gray-500">{hospital.address}</p>
+              </div>
+            </div>
+            <div className="flex gap-2 w-full sm:w-auto">
+              <button className="text-sm bg-gray-100 px-3 py-1 rounded hover:bg-gray-200">View</button>
+              <button className="text-sm bg-gray-100 px-3 py-1 rounded hover:bg-gray-200">Edit</button>
+              <button
+                className={`text-sm px-3 py-1 rounded ${
+                  hospital.isBlocked
+                    ? "bg-red-600 text-white hover:bg-red-700"
+                    : "bg-black text-white hover:bg-gray-800"
+                }`}
+                onClick={() => toggleBlockHospital(index)}
+              >
+                {hospital.isBlocked ? "Unblock" : "Block"}
+              </button>
             </div>
           </div>
-          <div className="flex gap-2">
-            <button className="text-sm bg-gray-100 px-3 py-1 rounded hover:bg-gray-200">
-              View
-            </button>
-            <button className="text-sm bg-gray-100 px-3 py-1 rounded hover:bg-gray-200">
-              Edit
-            </button>
-            <button
-              className={`text-sm px-3 py-1 rounded ${
-                hospital.isBlocked
-                  ? "bg-red-600 text-white hover:bg-red-700"
-                  : "bg-black text-white hover:bg-gray-800"
-              }`}
-              onClick={() => toggleBlockHospital(index)}
-            >
-              {hospital.isBlocked ? "Unblock" : "Block"}
-            </button>
-          </div>
-        </div>
-      ))}
+        ))}
+      </div>
 
-      <p className="text-center text-xs text-gray-400 mt-6">
-        Showing {((currentPage - 1) * ITEMS_PER_PAGE) + 1} to{" "}
+      {/* Pagination Summary */}
+      <p className="text-center text-xs text-gray-400 mt-4">
+        Showing {(currentPage - 1) * ITEMS_PER_PAGE + 1} to{" "}
         {Math.min(currentPage * ITEMS_PER_PAGE, filteredData.length)} of {filteredData.length} entries
       </p>
 
-      <div className="flex justify-center items-center space-x-1 mt-4 flex-wrap">
+      {/* Pagination Controls */}
+      <div className="flex justify-center items-center flex-wrap gap-1 mt-3">
         <Button
           onClick={() => goToPage(currentPage - 1)}
           variant="Managehospitalsnavi"

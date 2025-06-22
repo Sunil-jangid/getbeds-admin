@@ -18,7 +18,7 @@ type BookingsTableProps = {
   data: Booking[];
 };
 
-const ITEMS_PER_PAGE = 7;
+const ITEMS_PER_PAGE = 12;
 
 const BookingsTable: React.FC<BookingsTableProps> = ({ data }) => {
   const [search, setSearch] = useState("");

@@ -138,12 +138,13 @@ const LoginPage = () => {
           </p>
 
           {/* Google reCAPTCHA */}
-          <div>
+         <div className="mt-3">
             <ReCAPTCHA
-              sitekey="YOUR_RECAPTCHA_SITE_KEY"
+              sitekey="6Ld7W2krAAAAADVKOMjxiYmdDzZfItaF5e5sTtNI"
               onChange={handleCaptchaChange}
             />
           </div>
+
           {/* Login Button */}
           <Link href="/">
   <button

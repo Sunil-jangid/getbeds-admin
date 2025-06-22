@@ -305,7 +305,7 @@ const [allHospitalData, setAllHospitalData] = useState<Record<string, HospitalDa
       </div>
 
       {/* Bottom section */}
-      <div className="bg-gray-100 mt-8 min-h-screen">
+      <div className="bg-white mt-8 min-h-screen">
         <div className="flex gap-6">
           {/* Hospital Info */}
           <div className="w-1/2 bg-white rounded-2xl shadow-sm p-6 flex flex-col justify-between">

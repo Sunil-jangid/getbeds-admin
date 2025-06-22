@@ -78,7 +78,7 @@ export default function UsersPage() {
   };
 
   return (
-    <div className="p-14">
+    <div className="p-4">
       {/* Top Bar */}
       <div className="flex justify-between items-center mb-4">
         <div className="flex space-x-2">

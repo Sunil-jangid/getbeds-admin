@@ -1,64 +1,70 @@
 "use client";
+
 import React, { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import ReCAPTCHA from "react-google-recaptcha";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const LoginPage = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const [selectedRole, setSelectedRole] = useState("Admin");
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState("");
+  const router = useRouter();
 
-  const handleRoleChange = (role: string) => {
-    setSelectedRole(role);
-  };
+  const validEmails = ["user", "shareef@getbeds.in"];
+  const validPasswords = ["password", "1234567"];
 
   const handleCaptchaChange = (token: string | null) => {
     setCaptchaToken(token);
+  };
+
+  const handleLogin = () => {
+    if (!captchaToken) {
+      alert("Please complete the reCAPTCHA to proceed.");
+      return;
+    }
+
+    const trimmedEmail = email.trim().toLowerCase();
+    const trimmedPassword = password.trim();
+
+    if (
+      validEmails.includes(trimmedEmail) &&
+      validPasswords.includes(trimmedPassword)
+    ) {
+      router.push("/dashboard");
+    } else {
+      setErrorMessage("Invalid user ID or password");
+    }
   };
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row font-sans">
       {/* Left Panel */}
       <div className="md:w-1/2 w-full bg-gradient-to-br from-[#e0f2fe] via-[#f3e8ff] to-[#fef2f2] flex items-center justify-center p-6">
+        {/* Content left panel (same as original) */}
         <div className="flex flex-col items-center justify-center h-[90vh] space-y-6">
-          {/* Cards: 2-2-1 Layout */}
+          {/* Role Cards */}
           <div className="grid grid-cols-2 gap-4 w-[280px] sm:w-[550px]">
-            {/* Row 1 */}
-            <div className="flex items-center p-4 bg-white shadow-md rounded-xl space-x-4 cursor-pointer hover:scale-105 transition-transform duration-300">
-              <div className="w-10 h-10 bg-sky-300 rounded-md" />
-              <div>
-                <p className="font-semibold text-sm">Diagnostic Centres</p>
-                <p className="text-xs text-gray-500">Manage diagnostic centres</p>
+            {[
+              ["Diagnostic Centres", "Manage diagnostic centres"],
+              ["Hospital Beds", "Manage beds availability"],
+              ["Ambulances", "Manage ambulance availability"],
+              ["Bookings", "Review Booking Lists & Payments"],
+            ].map(([title, desc], index) => (
+              <div
+                key={index}
+                className="flex items-center p-4 bg-white shadow-md rounded-xl space-x-4 cursor-pointer hover:scale-105 transition-transform duration-300"
+              >
+                <div className="w-10 h-10 bg-sky-300 rounded-md" />
+                <div>
+                  <p className="font-semibold text-sm">{title}</p>
+                  <p className="text-xs text-gray-500">{desc}</p>
+                </div>
               </div>
-            </div>
+            ))}
 
-            <div className="flex items-center p-4 bg-white shadow-md rounded-xl space-x-4 cursor-pointer hover:scale-105 transition-transform duration-300">
-              <div className="w-10 h-10 bg-sky-300 rounded-md" />
-              <div>
-                <p className="font-semibold text-sm">Hospital Beds</p>
-                <p className="text-xs text-gray-500">Manage beds availability</p>
-              </div>
-            </div>
-
-            {/* Row 2 */}
-            <div className="flex items-center p-4 bg-white shadow-md rounded-xl space-x-4 cursor-pointer hover:scale-105 transition-transform duration-300">
-              <div className="w-10 h-10 bg-sky-300 rounded-md" />
-              <div>
-                <p className="font-semibold text-sm">Ambulances</p>
-                <p className="text-xs text-gray-500">Manage ambulance availability</p>
-              </div>
-            </div>
-
-            <div className="flex items-center p-4 bg-white shadow-md rounded-xl space-x-4 cursor-pointer hover:scale-105 transition-transform duration-300">
-              <div className="w-10 h-10 bg-sky-300 rounded-md" />
-              <div>
-                <p className="font-semibold text-sm">Bookings</p>
-                <p className="text-xs text-gray-500">Review Booking Lists & Payments</p>
-              </div>
-            </div>
-
-            {/* Row 3: Centered */}
             <div className="col-span-2 flex justify-center">
               <div className="flex items-center p-4 bg-white shadow-md rounded-xl space-x-4 w-full max-w-[260px] cursor-pointer hover:scale-105 transition-transform duration-300">
                 <div className="w-10 h-10 bg-sky-300 rounded-md" />
@@ -74,7 +80,7 @@ const LoginPage = () => {
 
       {/* Right Panel (Form) */}
       <div className="md:w-1/2 w-full flex justify-center items-center p-8 bg-gradient-to-br from-white to-gray-50">
-        <div className="w-full max-w-sm space-y-3">
+        <div className="w-full max-w-sm space-y-4">
           <h2 className="text-2xl font-semibold">Login</h2>
           <p className="text-sm text-gray-500">
             New to this account?{" "}
@@ -83,15 +89,15 @@ const LoginPage = () => {
             </a>
           </p>
 
-          
-
           {/* Email */}
           <div>
             <label className="text-sm font-medium">Email address</label>
             <input
-              type="email"
+              type="text"
               className="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
               placeholder="Enter email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
 
@@ -103,6 +109,8 @@ const LoginPage = () => {
                 type={passwordVisible ? "text" : "password"}
                 className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
                 placeholder="Enter password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
               <button
                 type="button"
@@ -116,34 +124,32 @@ const LoginPage = () => {
               Use 8 or more characters with a mix of letters, numbers & symbols
             </p>
           </div>
-            <br />
-          {/* Terms */}
-          <p className="text-xs text-gray-500">
-            By creating an account, you agree to our{" "}
-            <a href="#" className="text-black hover:underline">
-              Terms of use
-            </a>{" "}
-            and{" "}
-            <a href="#" className="text-black hover:underline">
-              Privacy Policy
-            </a>
-          </p>
 
-          {/* Google reCAPTCHA */}
-          <div>
+          {/* reCAPTCHA */}
+          <div className="mt-3">
             <ReCAPTCHA
-              sitekey="YOUR_RECAPTCHA_SITE_KEY"
+              sitekey="6Ld7W2krAAAAADVKOMjxiYmdDzZfItaF5e5sTtNI"
               onChange={handleCaptchaChange}
             />
           </div>
+
+          {/* Error Message */}
+          {errorMessage && (
+            <p className="text-red-600 text-sm mt-2">{errorMessage}</p>
+          )}
+
           {/* Login Button */}
-          <Link href="/dashboard">
-  <button
-    className="w-full py-2 rounded-md text-white transition-colors bg-gray-400 hover:bg-black mt-3"
-  >
-    Login
-  </button>
-</Link>
+          <button
+            onClick={handleLogin}
+            disabled={!captchaToken}
+            className={`w-full py-2 rounded-md text-white transition-colors mt-3 ${
+              captchaToken
+                ? "bg-gray-400 hover:bg-black"
+                : "bg-gray-300 cursor-not-allowed"
+            }`}
+          >
+            Login
+          </button>
 
           <p className="text-sm text-center text-gray-500">
             New to an account?{" "}
@@ -158,5 +164,3 @@ const LoginPage = () => {
 };
 
 export default LoginPage;
-
-
