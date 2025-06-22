@@ -48,6 +48,7 @@ export function DashboardNavbar() {
 
   const menuItems = [
     { name: 'Profile', href: '/dashboard/profile' },
+    { name: 'Company Insights', href: '/dashboard/CompanyiInsights' },
     { name: 'User Management', href: '/dashboard/usermanagement' },
     { name: 'Customer Support', href: '/dashboard/customersupport' },
     { name: 'Subscription Plan', href: '/dashboard/subscription' },
