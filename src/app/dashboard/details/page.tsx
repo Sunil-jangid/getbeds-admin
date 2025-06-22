@@ -94,9 +94,9 @@ const hospitalSections: HospitalSection[] = [
 
 const HospitalDetails = () => {
   return (
-    <div className="p-4 space-y-4 bg-gray-50">
-      <div className="container mx-auto">
-        <div className="mt-2 mb-6 flex flex-col gap-6">
+    <div className="min-h-screen bg-white">
+      <div className="w-full">
+        <div className="mb-8 space-y-6">
           <div className="flex flex-row gap-2 items-end">
             <h1 className="text-xl font-semibold">Hospital Name : </h1>
             <p className="text-3xl font-bold text-[#8ECAE6]">

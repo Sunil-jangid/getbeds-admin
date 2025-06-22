@@ -205,9 +205,9 @@ const [allHospitalData, setAllHospitalData] = useState<Record<string, HospitalDa
     <div className="w-full">
       <div className="flex flex-col lg:flex-row gap-6 h-full">
         {/* Left column */}
-        <div className="flex flex-col gap-6 w-full lg:w-1/3">
+        <div className="flex flex-col gap-6 w-full lg:w-1/3 ">
           {/* Average Order Value */}
-          <div className="bg-gray-50 p-6 rounded-2xl shadow-sm w-full">
+          <div className="bg-gray-50 p-6 rounded-xl shadow-lg w-full">
             <h2 className="text-gray-700 text-sm font-semibold mb-2">
               {data1.title}
             </h2>
@@ -226,7 +226,7 @@ const [allHospitalData, setAllHospitalData] = useState<Record<string, HospitalDa
           </div>
 
           {/* Top Performing Hospitals */}
-          <div className="bg-gray-50 p-6 rounded-2xl shadow-sm w-full">
+          <div className="bg-gray-50 p-6 rounded-xl shadow-lg w-full">
             <h2 className="text-xl font-bold mb-4">Top Performing Hospitals</h2>
             <div className="flex justify-between text-sm text-gray-500 font-medium mb-2">
               <span>Hospitals</span>
@@ -254,7 +254,7 @@ const [allHospitalData, setAllHospitalData] = useState<Record<string, HospitalDa
         </div>
 
         {/* Right column - Total Patients vs Revenue */}
-        <div className="w-full lg:w-2/3 flex flex-col justify-between bg-white p-6 rounded-2xl shadow-sm">
+        <div className="w-full lg:w-2/3 flex flex-col justify-between bg-white p-6 rounded-xl shadow-lg">
           <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-4 gap-4">
             <div>
               <h2 className="text-md font-semibold text-gray-700 mb-1">
@@ -305,10 +305,10 @@ const [allHospitalData, setAllHospitalData] = useState<Record<string, HospitalDa
       </div>
 
       {/* Bottom section */}
-      <div className="bg-white mt-8 min-h-screen">
+      <div className="bg-white mt-8 ">
         <div className="flex gap-6">
           {/* Hospital Info */}
-          <div className="w-1/2 bg-white rounded-2xl shadow-sm p-6 flex flex-col justify-between">
+          <div className="w-1/2 bg-white rounded-xl shadow-lg p-6 flex flex-col justify-between">
             <h2 className="text-lg font-bold text-black">Hospital Info</h2>
             <div className="h-56 w-full flex justify-center items-center">
               <ResponsiveContainer width="100%" height="100%">
@@ -354,7 +354,7 @@ const [allHospitalData, setAllHospitalData] = useState<Record<string, HospitalDa
           </div>
 
           {/* Earning Comparison */}
-          <div className="w-3/4 bg-white rounded-2xl shadow-sm p-4 flex flex-col justify-between">
+          <div className="w-3/4 bg-white rounded-xl shadow-lg p-4 flex flex-col justify-between">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-base font-semibold text-black">Earning Comparison</h2>
               <div className="flex items-center space-x-4">
@@ -379,7 +379,7 @@ const [allHospitalData, setAllHospitalData] = useState<Record<string, HospitalDa
                 </div>
               </div>
             </div>
-            <div className="h-full w-full">
+            <div className="min-h-full min-w-full">
               <Line data={chartData3} options={chartOptions} />
             </div>
           </div>
@@ -391,7 +391,7 @@ const [allHospitalData, setAllHospitalData] = useState<Record<string, HospitalDa
 
 
 
-      <div className="bg-white p-6 rounded-xl shadow w-full overflow-x-auto mt-[-140]">
+      <div className="bg-white p-6 rounded-xl shadow-lg w-full overflow-x-auto mt-8">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-semibold">Hospitals List</h2>
         <div className="flex space-x-2">

@@ -35,7 +35,7 @@ const BookingPage = () => {
   const bookings = generateDummyData();
 
   return (
-    <div className="w-full min-h-screen bg-white text-gray-800">
+    <div className="w-full bg-white text-gray-800">
       <div className="w-full h-full p-4 sm:p-6 md:p-0">
         <BookingsTable data={bookings} />
       </div>

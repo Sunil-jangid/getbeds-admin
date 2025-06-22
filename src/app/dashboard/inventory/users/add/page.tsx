@@ -63,8 +63,8 @@ export default function AddOrEditUser() {
   };
 
   return (
-    <div className="p-6 max-w-6xl mx-auto">
-      <div className="bg-white p-6 rounded-md">
+    <div className="w-full px-4 sm:px-6 lg:px-8 py-6">
+      <div className="bg-white p-6  w-full">
         <h1 className="text-xl font-semibold mb-6">
           {isEditMode ? userData.name : "Add User"}
         </h1>
