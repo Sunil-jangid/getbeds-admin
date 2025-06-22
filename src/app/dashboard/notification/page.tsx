@@ -30,7 +30,7 @@ const notificationData = [
 
 const NotificationList: React.FC = () => {
   return (
-    <div className="max-w-6xl mx-auto py-10 px-6">
+    <div className="w-full min-h-screen mx-auto py-10 px-6">
       {notificationData.map((notif, index) => (
         <NotificationCard
           key={index}

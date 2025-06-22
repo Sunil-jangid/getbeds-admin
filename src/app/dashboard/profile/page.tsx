@@ -26,7 +26,6 @@ type FormFieldKey = keyof FormDataType;
 type StringFieldKey = Extract<FormFieldKey, Exclude<FormFieldKey, "notifyEmail" | "notifySMS">>;
 type BooleanFieldKey = Extract<FormFieldKey, "notifyEmail" | "notifySMS">;
 
-
 export default function AdminProfile() {
   const [activeMenu, setActiveMenu] = useState<typeof menuItems[number]>("General Information");
   const [editSection, setEditSection] = useState<string | null>(null);
@@ -60,7 +59,7 @@ export default function AdminProfile() {
     sectionKey: string;
     children: React.ReactNode;
   }) => (
-    <div className="bg-white p-4 rounded relative space-y-4">
+    <div className="bg-white p-4 rounded relative space-y-4 shadow ">
       <div className="flex justify-between items-center mb-2">
         <h2 className="text-lg font-semibold">{title}</h2>
         {editSection !== sectionKey && (
@@ -201,9 +200,9 @@ export default function AdminProfile() {
   };
 
   return (
-    <div className="min-h-screen bg-white flex">
+    <div className="min-h-screen w-full flex flex-col lg:flex-row overflow-x-hidden">
       {/* Sidebar */}
-      <div className="w-64 bg-white shadow p-6">
+      <div className="w-full lg:max-w-[330px] bg-white shadow-md border-r p-6">
         <div className="text-center mb-6">
           <p className="mb-3 font-bold text-xl">Admin Profile</p>
           <img
@@ -224,7 +223,7 @@ export default function AdminProfile() {
             className={clsx(
               "w-full text-left px-4 py-2 rounded mb-2",
               activeMenu === item
-                ? "bg-blue-400 font-semibold text-white"
+                ? "bg-blue-500 text-white font-semibold"
                 : "hover:bg-gray-100"
             )}
           >
@@ -234,8 +233,8 @@ export default function AdminProfile() {
       </div>
 
       {/* Main content */}
-      <div className="flex-1 p-6">
-        <div className="max-w-4xl mx-auto space-y-6">{renderSection()}</div>
+      <div className="flex-1 p-6 w-full">
+        <div className="w-full max-w-7xl mx-auto space-y-6">{renderSection()}</div>
       </div>
     </div>
   );
@@ -268,11 +267,10 @@ const InputField = ({
       type="text"
       value={value}
       onChange={(e) => onChange(label, e.target.value)}
-      className="w-full border rounded"
+      className="w-full border border-gray-300 px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
     />
   </div>
 );
-
 
 // Checkbox input
 const CheckboxField = ({
@@ -291,6 +289,7 @@ const CheckboxField = ({
       type="checkbox"
       checked={checked}
       onChange={(e) => onChange(field, e.target.checked)}
+      className="h-4 w-4"
     />
     <label className="text-sm">{label}</label>
   </div>

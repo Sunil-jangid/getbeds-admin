@@ -322,7 +322,7 @@ const Dashboard = () => {
       </div>
 
       {/* Main Content Area: User Subscriptions, Total Subscriptions, Users vs Revenue */}
-      <div className="bg-white rounded-lg shadow-md mt-6 p-4 sm:p-6 w-full max-w-full">
+      <div className="bg-white mt-6 w-full max-w-full">
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Left Section (2/3 width on large screens) */}
           <div className="w-full lg:w-2/3">
