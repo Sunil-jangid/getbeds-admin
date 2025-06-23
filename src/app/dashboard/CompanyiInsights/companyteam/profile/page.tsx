@@ -2,8 +2,9 @@
 
 import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
+import { Suspense } from 'react';
 
-export default function ProfilePage() {
+function ProfilePageContent() {
   const params = useSearchParams();
 
   const name = params.get("name") || "";
@@ -80,5 +81,13 @@ export default function ProfilePage() {
         
       </div></div>
     </div>
+  );
+}
+
+export default function ProfilePage() {
+  return (
+    <Suspense fallback={<div className="p-10">Loading profile...</div>}>
+      <ProfilePageContent />
+    </Suspense>
   );
 }

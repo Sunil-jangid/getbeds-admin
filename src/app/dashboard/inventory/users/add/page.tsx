@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import { MapPin, Phone, Mail } from "lucide-react";
 
 type UserData = {
@@ -14,7 +14,7 @@ type UserData = {
   hospitalVisited: string;
 };
 
-export default function AddOrEditUser() {
+function AddOrEditUserContent() {
   const searchParams = useSearchParams();
   const [userData, setUserData] = useState<UserData>({
     uid: "",
@@ -154,5 +154,13 @@ export default function AddOrEditUser() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function AddOrEditUser() {
+  return (
+    <Suspense fallback={<div className="w-full px-4 sm:px-6 lg:px-8 py-6">Loading...</div>}>
+      <AddOrEditUserContent />
+    </Suspense>
   );
 }

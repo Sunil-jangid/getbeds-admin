@@ -198,7 +198,7 @@ export function DashboardNavbar() {
                             const isSubActive = pathname === dropdownItem.href;
                             return (
                               <Link
-                                key={dropdownItem.href}
+                                key={dropdownItem.name}
                                 href={dropdownItem.href}
                                 onClick={() => setOpenDropdown(null)}
                                 className={cn(
