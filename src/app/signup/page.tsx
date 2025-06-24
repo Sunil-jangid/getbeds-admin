@@ -1,4 +1,3 @@
-
 "use client";
 import React, { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
@@ -140,7 +139,7 @@ const LoginPage = () => {
           {/* Google reCAPTCHA */}
          <div className="mt-3">
             <ReCAPTCHA
-              sitekey="6Ld7W2krAAAAADVKOMjxiYmdDzZfItaF5e5sTtNI"
+              sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || "6Ld7W2krAAAAADVKOMjxiYmdDzZfItaF5e5sTtNI"}
               onChange={handleCaptchaChange}
             />
           </div>
