@@ -25,7 +25,6 @@ const LoginPage = () => {
       alert("Please complete the reCAPTCHA to proceed.");
       return;
     }
-
     const trimmedEmail = email.trim().toLowerCase();
     const trimmedPassword = password.trim();
 

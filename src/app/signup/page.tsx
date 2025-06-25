@@ -140,7 +140,7 @@ const LoginPage = () => {
           {/* Google reCAPTCHA */}
          <div className="mt-3">
             <ReCAPTCHA
-              sitekey="6Ld7W2krAAAAADVKOMjxiYmdDzZfItaF5e5sTtNI"
+              sitekey="6LfHtGwrAAAAADISvsTel7wx8JHAABxlrHrGdhEY"
               onChange={handleCaptchaChange}
             />
           </div>
