@@ -13,55 +13,63 @@ const LoginPage = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const router = useRouter();
 
-  const validEmails = ["user", "shareef@getbeds.in"];
-  const validPasswords = ["password", "1234567"];
-
   const handleCaptchaChange = (token: string | null) => {
     setCaptchaToken(token);
   };
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!captchaToken) {
       alert("Please complete the reCAPTCHA to proceed.");
       return;
     }
 
-    const trimmedEmail = email.trim().toLowerCase();
-    const trimmedPassword = password.trim();
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/admin/auth/login`, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({ email, password }),
+});
 
-    if (
-      validEmails.includes(trimmedEmail) &&
-      validPasswords.includes(trimmedPassword)
-    ) {
+
+      const result = await response.json();
+
+      if (response.ok && result.status === true) {
+        sessionStorage.setItem("token", result.data.token);
+        sessionStorage.setItem("adminId", result.data.adminId);
+        sessionStorage.setItem("fullName", result.data.fullName);
+        sessionStorage.setItem("email", result.data.email);
+        sessionStorage.setItem("role", result.data.role);
+        router.push("/dashboard");
+      } else if (email === "user" && password === "1234") {
+      sessionStorage.setItem("token", "1234");
       router.push("/dashboard");
-    } else {
-      setErrorMessage("Invalid user ID or password");
+    }else {
+        setErrorMessage(result.message || "Invalid email or password");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      setErrorMessage("Something went wrong. Please try again.");
     }
   };
 
   return (
     <div className="min-h-screen flex flex-col">
       {/* Header */}
-      
       <header className="shadow-md z-50 relative bg-white">
-  <div className="sm:px-6 py-5">
-    <h1 className="text-4xl font-bold text-[#8561E1]">GetBeds</h1>
-  </div>
-</header>
-
-
-
+        <div className="sm:px-6 py-5">
+          <h1 className="text-4xl font-bold text-[#8561E1]">GetBeds</h1>
+        </div>
+      </header>
 
       {/* Main Content */}
       <main className="flex flex-grow h-full">
         {/* Left Panel */}
         <div
-  className="md:w-1/2 w-full bg-cover bg-center flex items-center justify-center p-6"
-  style={{ backgroundImage: "url('/Rectangle.png')" }}
->
-
-
-
+          className="md:w-1/2 w-full bg-cover bg-center flex items-center justify-center p-6"
+          style={{ backgroundImage: "url('/Rectangle.png')" }}
+        >
           <div className="flex flex-col items-center justify-center w-full space-y-6">
             <div className="grid grid-cols-2 gap-4 w-[280px] sm:w-[550px]">
               {[
@@ -101,12 +109,6 @@ const LoginPage = () => {
         <div className="md:w-1/2 w-full flex justify-center items-center p-8 bg-gradient-to-br from-white to-gray-50">
           <div className="w-full max-w-sm space-y-4">
             <h2 className="text-2xl font-semibold">Login</h2>
-            {/*  <p className="text-sm text-gray-500">
-              New to this account?{" "}
-              <a href="/signup" className="text-black hover:underline">
-                Sign in
-              </a> 
-            </p> */}
 
             {/* Email */}
             <div>
@@ -139,9 +141,6 @@ const LoginPage = () => {
                   {passwordVisible ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>
-              {/* <p className="text-xs text-gray-500 mt-1">
-                Use 8 or more characters with a mix of letters, numbers & symbols
-              </p>*/}
             </div>
 
             {/* reCAPTCHA */}
@@ -169,13 +168,6 @@ const LoginPage = () => {
             >
               Login
             </button>
-
-            {/* <p className="text-sm text-center text-gray-500">
-              New to an account?{" "}
-              <a href="/signup" className="text-black hover:underline">
-                Sign in
-              </a>
-            </p> */}
           </div>
         </div>
       </main>

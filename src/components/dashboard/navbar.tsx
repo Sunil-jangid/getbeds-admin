@@ -41,6 +41,8 @@ export function DashboardNavbar() {
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredPages, setFilteredPages] = useState<{ name: string; href: string }[]>([]);
   const [selectedHref, setSelectedHref] = useState('');
+  const [fullName, setFullName] = useState('');
+  const [role, setRole] = useState('');
 
   const profileRef = useRef<HTMLDivElement>(null);
   const navRef = useRef<HTMLDivElement>(null);
@@ -79,6 +81,14 @@ export function DashboardNavbar() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  // 🔁 Get fullName and role from sessionStorage instead of localStorage
+  useEffect(() => {
+    const storedName = sessionStorage.getItem('fullName') || '';
+    const storedRole = sessionStorage.getItem('role') || '';
+    setFullName(storedName);
+    setRole(storedRole);
+  }, []);
+
   const handleSearchToggle = () => {
     setShowSearchBar((prev) => !prev);
     setSearchQuery('');
@@ -89,10 +99,7 @@ export function DashboardNavbar() {
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value.toLowerCase();
     setSearchQuery(query);
-
-    const matched = allPages.filter((page) =>
-      page.name.toLowerCase().includes(query)
-    );
+    const matched = allPages.filter((page) => page.name.toLowerCase().includes(query));
     setFilteredPages(matched);
     setSelectedHref('');
   };
@@ -106,9 +113,7 @@ export function DashboardNavbar() {
   const handleSearchSubmit = () => {
     const finalHref =
       selectedHref ||
-      allPages.find(
-        (page) => page.name.toLowerCase() === searchQuery.toLowerCase()
-      )?.href;
+      allPages.find((page) => page.name.toLowerCase() === searchQuery.toLowerCase())?.href;
 
     if (finalHref) {
       router.push(finalHref);
@@ -118,6 +123,16 @@ export function DashboardNavbar() {
     } else {
       alert('No matching page found');
     }
+  };
+
+  const handleLogout = () => {
+    localStorage.clear();
+    sessionStorage.clear();
+    document.cookie.split(';').forEach((c) => {
+      document.cookie = c
+        .replace(/^ +/, '')
+        .replace(/=.*/, '=;expires=' + new Date(0).toUTCString() + ';path=/');
+    });
   };
 
   return (
@@ -263,11 +278,11 @@ export function DashboardNavbar() {
                 className="bg-white px-3 py-2 rounded-full shadow-sm border border-[#F8F9FA] flex items-center gap-3 cursor-pointer hover:shadow-md transition"
               >
                 <div className="flex flex-col text-right">
-                  <span className="text-sm font-medium text-black">John Doe</span>
-                  <span className="text-xs text-muted-foreground text-gray-500">Admin</span>
+                  <span className="text-sm font-medium text-black">{fullName || 'Unknown User'}</span>
+                  <span className="text-xs text-muted-foreground text-gray-500">{role || 'No Role'}</span>
                 </div>
                 <Image
-                  src="/pro.png"
+                  src="/profi.png"
                   alt="Profile"
                   width={32}
                   height={32}
@@ -281,7 +296,12 @@ export function DashboardNavbar() {
                     <Link
                       key={item.name}
                       href={item.href}
-                      onClick={() => setIsProfileOpen(false)}
+                      onClick={() => {
+                        setIsProfileOpen(false);
+                        if (item.name === 'Log out') {
+                          handleLogout();
+                        }
+                      }}
                       className={`block px-4 py-2 text-sm transition-all duration-300 hover:bg-black hover:text-white ${
                         index === 0 ? 'font-medium rounded-t-2xl' : ''
                       } ${index === menuItems.length - 1 ? 'rounded-b-2xl' : ''}`}
