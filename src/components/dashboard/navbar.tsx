@@ -153,22 +153,25 @@ export function DashboardNavbar() {
             ref={navRef}
           >
             {showSearchBar ? (
-              <div className="relative flex flex-col px-4 py-2" ref={searchRef}>
-                <div className="flex gap-2 items-center w-full max-w-[90vw] sm:max-w-3xl">
-                  <input
-                    type="text"
-                    placeholder="Search pages..."
-                    value={searchQuery}
-                    onChange={handleSearchChange}
-                    className="w-full px-4 py-2 text-sm border rounded-lg focus:outline-none"
-                  />
-                  <button
-                    onClick={handleSearchSubmit}
-                    className="bg-black text-white text-sm px-4 py-2 rounded-lg hover:bg-gray-800"
-                  >
-                    Search
-                  </button>
-                </div>
+              <div className="relative flex flex-col" ref={searchRef}>
+                <div className="flex gap-2" style={{ maxWidth: '740px' }}> {/* Adjusted from 730px or so */}
+  <input
+    type="text"
+    placeholder="Search pages..."
+    value={searchQuery}
+    onChange={handleSearchChange}
+    className="w-[600px] px-4 py-2 text-sm border rounded-lg focus:outline-none placeholder:text-left"
+  />
+  <button
+    onClick={handleSearchSubmit}
+    className="bg-black text-white text-sm px-6 py-2 rounded-lg hover:bg-gray-800"
+  >
+    Search
+  </button>
+</div>
+
+
+
 
                 {filteredPages.length > 0 && (
                   <div className="absolute top-[100%] mt-1 left-0 w-full bg-white border border-gray-300 rounded-lg shadow-lg z-50 max-h-52 overflow-y-auto">

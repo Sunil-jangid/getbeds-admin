@@ -106,70 +106,71 @@ const LoginPage = () => {
         </div>
 
         {/* Right Panel */}
-        <div className="md:w-1/2 w-full flex justify-center items-center p-8 bg-gradient-to-br from-white to-gray-50">
-          <div className="w-full max-w-sm space-y-4">
-            <h2 className="text-2xl font-semibold">Login</h2>
+        <div className="md:w-1/2 w-full flex justify-center items-center p-8 bg-white bg-opacity-30 backdrop-blur-md shadow-xl rounded-2xl border border-gray-200">
+  <div className="w-full max-w-sm space-y-4">
+    <h2 className="text-3xl font-semibold text-gray-800">Login</h2>
 
-            {/* Email */}
-            <div>
-              <label className="text-sm font-medium">Email address</label>
-              <input
-                type="text"
-                className="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-                placeholder="Enter email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
+    {/* Email */}
+    <div>
+      <label className="text-sm font-medium text-gray-700">Email address</label>
+      <input
+        type="text"
+        className="mt-1 w-full px-4 py-2 rounded-lg border border-gray-300 bg-white/80 backdrop-blur focus:outline-none focus:ring-2 focus:ring-blue-400"
+        placeholder="Enter email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+      />
+    </div>
 
-            {/* Password */}
-            <div>
-              <label className="text-sm font-medium">Password</label>
-              <div className="relative mt-1">
-                <input
-                  type={passwordVisible ? "text" : "password"}
-                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-                  placeholder="Enter password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-                <button
-                  type="button"
-                  onClick={() => setPasswordVisible((prev) => !prev)}
-                  className="absolute inset-y-0 right-3 flex items-center text-gray-500"
-                >
-                  {passwordVisible ? <EyeOff size={16} /> : <Eye size={16} />}
-                </button>
-              </div>
-            </div>
+    {/* Password */}
+    <div>
+      <label className="text-sm font-medium text-gray-700">Password</label>
+      <div className="relative mt-1">
+        <input
+          type={passwordVisible ? "text" : "password"}
+          className="w-full px-4 py-2 rounded-lg border border-gray-300 bg-white/80 backdrop-blur focus:outline-none focus:ring-2 focus:ring-blue-400"
+          placeholder="Enter password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <button
+          type="button"
+          onClick={() => setPasswordVisible((prev) => !prev)}
+          className="absolute inset-y-0 right-3 flex items-center text-gray-500"
+        >
+          {passwordVisible ? <EyeOff size={16} /> : <Eye size={16} />}
+        </button>
+      </div>
+    </div>
 
-            {/* reCAPTCHA */}
-            <div className="mt-3">
-              <ReCAPTCHA
-                sitekey="6LfHtGwrAAAAADISvsTel7wx8JHAABxlrHrGdhEY"
-                onChange={handleCaptchaChange}
-              />
-            </div>
+    {/* reCAPTCHA */}
+    <div className="mt-3">
+      <ReCAPTCHA
+        sitekey="6LfHtGwrAAAAADISvsTel7wx8JHAABxlrHrGdhEY"
+        onChange={handleCaptchaChange}
+      />
+    </div>
 
-            {/* Error Message */}
-            {errorMessage && (
-              <p className="text-red-600 text-sm mt-2">{errorMessage}</p>
-            )}
+    {/* Error Message */}
+    {errorMessage && (
+      <p className="text-red-600 text-sm mt-2">{errorMessage}</p>
+    )}
 
-            {/* Login Button */}
-            <button
-              onClick={handleLogin}
-              disabled={!captchaToken}
-              className={`w-full py-2 rounded-md text-white transition-colors mt-3 ${
-                captchaToken
-                  ? "bg-gray-400 hover:bg-black"
-                  : "bg-gray-300 cursor-not-allowed"
-              }`}
-            >
-              Login
-            </button>
-          </div>
-        </div>
+    {/* Login Button */}
+    <button
+      onClick={handleLogin}
+      disabled={!captchaToken}
+      className={`w-full py-2 rounded-lg text-white font-medium transition-colors mt-3 ${
+        captchaToken
+          ? "bg-black hover:bg-black"
+          : "bg-gray-300 cursor-not-allowed"
+      }`}
+    >
+      Login
+    </button>
+  </div>
+</div>
+
       </main>
     </div>
   );
