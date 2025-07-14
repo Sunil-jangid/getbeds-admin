@@ -37,9 +37,9 @@ const LoginPage = () => {
 
       if (response.ok && result.status === true) {
         sessionStorage.setItem("token", result.data.token);
-        sessionStorage.setItem("adminId", result.data.adminId);
+        {/* sessionStorage.setItem("adminId", result.data.adminId); */}
         sessionStorage.setItem("fullName", result.data.fullName);
-        sessionStorage.setItem("email", result.data.email);
+        {/* sessionStorage.setItem("email", result.data.email); */}
         sessionStorage.setItem("role", result.data.role);
         router.push("/dashboard");
       } else if (email === "user" && password === "1234") {
