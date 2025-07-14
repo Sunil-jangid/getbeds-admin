@@ -106,7 +106,7 @@ const LoginPage = () => {
         </div>
 
         {/* Right Panel */}
-        <div className="md:w-1/2 w-full flex justify-center items-center p-8 bg-white bg-opacity-30 backdrop-blur-md shadow-xl rounded-2xl border border-gray-200">
+        <div className="md:w-1/2 w-full flex justify-center items-center p-8 bg-white bg-opacity-30 backdrop-blur-md shadow-xl border border-gray-200">
   <div className="w-full max-w-sm space-y-4">
     <h2 className="text-3xl font-semibold text-gray-800">Login</h2>
 
