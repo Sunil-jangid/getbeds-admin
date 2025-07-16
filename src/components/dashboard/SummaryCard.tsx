@@ -3,7 +3,7 @@
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { useMemo, useState } from "react";
 import Link from "next/link";
-
+import { Lock } from "lucide-react"; // ✅ Added
 
 interface CardItem {
   id: string;
@@ -12,6 +12,7 @@ interface CardItem {
   growth: number;
   chartData: number[];
   link: string;
+  locked?: boolean; // ✅ Optional locked flag
 }
 
 interface SummaryCardProps {
@@ -50,7 +51,18 @@ const SummaryCard: React.FC<SummaryCardProps> = ({ item, className = "" }) => {
   const totalRevenue = chartData.reduce((sum, d) => sum + d.value, 0);
 
   return (
-    <div className={`bg-white rounded-2xl shadow-xl p-4 flex flex-col justify-between ${className}`}>
+    <div className={`relative bg-white rounded-2xl shadow-xl p-4 flex flex-col justify-between ${className}`}>
+      {/* 🔒 Locked Overlay */}
+      {item.locked && (
+  <div className="absolute inset-0 backdrop-blur-sm bg-black/10 z-10 flex flex-col items-center justify-center rounded-2xl">
+    <Lock className="w-8 h-8 text-gray-700 mb-2" />
+    <p className="text-gray-800 font-medium text-sm">Work in Progress</p>
+  </div>
+)}
+
+
+      {/* Content */}
+     <div className={`bg-white rounded-2xl flex flex-col justify-between ${className}`}>
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 mb-2">
         <div>
@@ -115,6 +127,7 @@ const SummaryCard: React.FC<SummaryCardProps> = ({ item, className = "" }) => {
   </Link>
 </div>
 
+    </div>
     </div>
   );
 };

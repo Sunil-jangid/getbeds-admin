@@ -32,31 +32,35 @@ const Dashboard = () => {
   const isRandomYear = selectedYear === "2026" || selectedYear === "2027";
 
   const getCardsData = () => [
-    {
-      id: "hospitals",
-      title: "HOSPITALS",
-      revenue: 0,
-      growth: isRealYear ? 12890 : isRandomYear ? Math.floor(Math.random() * 5000) : 0,
-      chartData: isRealYear ? generateRandomData(500, 2000, 360) : isRandomYear ? generateRandomData(500, 1500, 360) : Array(360).fill(0),
-      link: "/dashboard/hospital/",
-    },
-    {
-      id: "ambulance",
-      title: "AMBULANCE",
-      revenue: 0,
-      growth: isRealYear ? 7890 : isRandomYear ? Math.floor(Math.random() * 4000) : 0,
-      chartData: isRealYear ? generateRandomData(800, 1500, 360) : isRandomYear ? generateRandomData(400, 1300, 360) : Array(360).fill(0),
-      link: "/dashboard/ambulance/",
-    },
-    {
-      id: "diagnostic",
-      title: "DIAGNOSTIC CENTRES",
-      revenue: 0,
-      growth: isRealYear ? -14580 : isRandomYear ? -Math.floor(Math.random() * 2000) : 0,
-      chartData: isRealYear ? generateRandomData(500, 1200, 360) : isRandomYear ? generateRandomData(200, 900, 360) : Array(360).fill(0),
-      link: "/dashboard/Diagnostic/",
-    },
-  ];
+  {
+    id: "hospitals",
+    title: "HOSPITALS",
+    revenue: 0,
+    growth: isRealYear ? 12890 : isRandomYear ? Math.floor(Math.random() * 5000) : 0,
+    chartData: isRealYear ? generateRandomData(500, 2000, 360) : isRandomYear ? generateRandomData(500, 1500, 360) : Array(360).fill(0),
+    link: "/dashboard/hospital/",
+    locked: false,
+  },
+  {
+    id: "ambulance",
+    title: "AMBULANCE",
+    revenue: 0,
+    growth: isRealYear ? 7890 : isRandomYear ? Math.floor(Math.random() * 4000) : 0,
+    chartData: isRealYear ? generateRandomData(800, 1500, 360) : isRandomYear ? generateRandomData(400, 1300, 360) : Array(360).fill(0),
+    link: "/dashboard/ambulance/",
+    locked: true,
+  },
+  {
+    id: "diagnostic",
+    title: "DIAGNOSTIC CENTRES",
+    revenue: 0,
+    growth: isRealYear ? -14580 : isRandomYear ? -Math.floor(Math.random() * 2000) : 0,
+    chartData: isRealYear ? generateRandomData(500, 1200, 360) : isRandomYear ? generateRandomData(200, 900, 360) : Array(360).fill(0),
+    link: "/dashboard/Diagnostic/",
+    locked: true,
+  },
+];
+
 
   const getOverviewStats = () => [
     {
