@@ -2,19 +2,67 @@
 import React, { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import ReCAPTCHA from "react-google-recaptcha";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 
-const LoginPage = () => {
+const SignupPage = () => {
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const [selectedRole, setSelectedRole] = useState("Admin");
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
-
-  const handleRoleChange = (role: string) => {
-    setSelectedRole(role);
-  };
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   const handleCaptchaChange = (token: string | null) => {
     setCaptchaToken(token);
+  };
+
+  const handleSignup = async () => {
+    if (!captchaToken) {
+      alert("Please complete the reCAPTCHA to proceed.");
+      return;
+    }
+
+    if (!fullName || !email || !password) {
+      setErrorMessage("Please fill in all fields.");
+      return;
+    }
+
+    setIsLoading(true);
+    setErrorMessage("");
+    setSuccessMessage("");
+
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/admin/auth/create-account`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ 
+          fullName, 
+          email, 
+          password 
+        }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result.status === true) {
+        setSuccessMessage("Account created successfully! Redirecting to login...");
+        setTimeout(() => {
+          router.push("/");
+        }, 2000); // Redirect after 2 seconds
+      } else {
+        setErrorMessage(result.message || "Failed to create account. Please try again.");
+      }
+    } catch (error) {
+      console.error("Signup error:", error);
+      setErrorMessage("Something went wrong. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -83,13 +131,15 @@ const LoginPage = () => {
             </a>
           </p>
 
-          {/* user name */}
+          {/* Full Name */}
           <div>
-            <label className="text-sm font-medium">User name</label>
+            <label className="text-sm font-medium">Full Name</label>
             <input
-              type="email"
+              type="text"
               className="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-              placeholder="Enter user name"
+              placeholder="Enter your full name"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
             />
           </div>
 
@@ -100,6 +150,8 @@ const LoginPage = () => {
               type="email"
               className="mt-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
               placeholder="Enter email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
 
@@ -111,6 +163,8 @@ const LoginPage = () => {
                 type={passwordVisible ? "text" : "password"}
                 className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
                 placeholder="Enter password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
               <button
                 type="button"
@@ -144,14 +198,42 @@ const LoginPage = () => {
             />
           </div>
 
-          {/* Login Button */}
-          <Link href="/">
-  <button
-    className="w-full py-2 rounded-md text-white transition-colors bg-gray-400 hover:bg-black mt-3"
-  >
-    Create an accrount
-  </button>
-</Link>
+          {/* Success Message */}
+          {successMessage && (
+            <div className="bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-md">
+              <div className="flex items-center">
+                <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+                {successMessage}
+              </div>
+            </div>
+          )}
+
+          {/* Error Message */}
+          {errorMessage && (
+            <div className="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-md">
+              <div className="flex items-center">
+                <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                </svg>
+                {errorMessage}
+              </div>
+            </div>
+          )}
+
+          {/* Create Account Button */}
+          <button
+            onClick={handleSignup}
+            disabled={!captchaToken || isLoading}
+            className={`w-full py-2 rounded-md text-white transition-colors mt-3 ${
+              captchaToken && !isLoading
+                ? "bg-black hover:bg-gray-800"
+                : "bg-gray-400 cursor-not-allowed"
+            }`}
+          >
+            {isLoading ? "Creating Account..." : "Create an account"}
+          </button>
 
           <p className="text-sm text-center text-gray-500">
             Already have an account?{" "}
@@ -165,4 +247,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default SignupPage;

@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import ReCAPTCHA from "react-google-recaptcha";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { motion } from "framer-motion";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -168,6 +170,35 @@ const LoginPage = () => {
     >
       Login
     </button>
+
+    {/* Divider with "New to GetBeds?" text */}
+    <div className="relative mt-8 text-center">
+      <div className="absolute inset-0 flex items-center">
+        <div className="w-full border-t border-gray-200"></div>
+      </div>
+      <div className="relative">
+        <span className="px-4 text-sm text-gray-500 bg-white/80 backdrop-blur">
+          New to GetBeds?
+        </span>
+      </div>
+    </div>
+
+    {/* Create Account Button */}
+    <motion.div
+      whileHover={{ scale: 1.01 }}
+      whileTap={{ scale: 0.99 }}
+      className="mt-6"
+    >
+      <Link href="/signup">
+        <button
+          className="w-full py-2 px-4 rounded-lg text-gray-700 font-medium transition-all duration-200 
+                   border-2 border-gray-200 bg-white/80 backdrop-blur
+                   hover:bg-gray-50 hover:border-gray-300 hover:shadow-sm"
+        >
+          Create an Account
+        </button>
+      </Link>
+    </motion.div>
   </div>
 </div>
 
